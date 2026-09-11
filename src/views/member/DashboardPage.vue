@@ -9,7 +9,10 @@ import type { MemberDashboard, TaskAssignment, MemberEnrichment, AssignmentComme
 import AppLayout from '@/components/layout/AppLayout.vue'
 import WelcomeModal from '@/components/member/WelcomeModal.vue'
 import BaseModal from '@/components/common/BaseModal.vue'
+import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
 import {
+  ChevronDownIcon,
+  ClipboardDocumentListIcon,
   UserCircleIcon,
   UsersIcon,
   BriefcaseIcon,
@@ -62,6 +65,8 @@ const openJobs = computed(() => jobsStore.pagination?.total || null)
 
 // ---- Engine: cohort, tasks, onboarding (added to the existing dashboard) ----
 const engine = ref<MemberDashboard | null>(null)
+const engineLoading = ref(true)
+const engineError = ref(false)
 const acceptingTerms = ref(false)
 const drafts = reactive<Record<string, { link: string; body: string }>>({})
 const submitting = reactive<Record<string, boolean>>({})
@@ -114,8 +119,11 @@ const openTasks = computed(() => (engine.value?.tasks ?? []).filter((t) => t.sta
 const doneTasks = computed(() => (engine.value?.tasks ?? []).filter((t) => t.status === 'completed'))
 
 async function loadEngine() {
+  engineLoading.value = true
+  engineError.value = false
   try {
     const res = await engineApi.getDashboard()
+    if (!res.status || !res.data) throw new Error('Dashboard unavailable')
     const data = res.data ?? null
     for (const a of data?.tasks ?? []) {
       drafts[a.task_id] = { link: a.link_url ?? '', body: a.body ?? '' }
@@ -123,6 +131,9 @@ async function loadEngine() {
     engine.value = data
   } catch {
     engine.value = null
+    engineError.value = true
+  } finally {
+    engineLoading.value = false
   }
   try {
     baselineCaptured.value = !!(await baselinesApi.getMyBaseline('intake')).data
@@ -297,37 +308,29 @@ function commentTimeAgo(d: string) {
       </template>
     </BaseModal>
 
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- Hero Section -->
-      <div class="mb-8">
+    <div class="member-dashboard max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Overview -->
+      <div class="dashboard-heading mb-8">
         <div class="flex items-start justify-between">
           <div>
             <h1 class="text-3xl font-bold text-gray-900">
               {{ greeting }}, {{ memberFirstName }}.
             </h1>
             <p class="mt-2 text-lg text-gray-600">
-              You are Senpai. What will you build today?
+              Your work, your people, and what’s next.
             </p>
           </div>
-          <div class="hidden sm:block text-right">
+          <div class="dashboard-member-since hidden sm:block text-right">
             <p class="text-sm text-gray-500">Member since</p>
             <p class="font-medium text-gray-900">{{ memberSince }}</p>
           </div>
         </div>
       </div>
 
-      <!-- Today's Reminder — always at the top -->
-      <div class="mb-8 bg-gray-900 rounded-2xl p-6 text-white">
-        <div class="flex items-start gap-4">
-          <div class="shrink-0 w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
-            <LightBulbIcon class="h-6 w-6" />
-          </div>
-          <div>
-            <p class="text-sm text-gray-400 mb-1">Today's Reminder</p>
-            <h3 class="text-lg font-semibold mb-2">{{ dailyValue?.name || 'Daily Value' }}</h3>
-            <p class="text-gray-300 text-sm">{{ dailyValue?.insight || 'Focus on growth and collaboration' }}</p>
-          </div>
-        </div>
+      <div class="dashboard-shortcuts" aria-label="Task overview">
+        <RouterLink to="/tasks"><span class="shortcut-icon"><ClipboardDocumentListIcon /></span><div><span class="shortcut-label">Active tasks</span><strong>{{ engineLoading || engineError ? '—' : openTasks.filter(t => t.status !== 'submitted').length }}</strong></div><ArrowRightIcon class="shortcut-arrow" /></RouterLink>
+        <RouterLink to="/tasks"><span class="shortcut-icon shortcut-review"><ClockIcon /></span><div><span class="shortcut-label">In review</span><strong>{{ engineLoading || engineError ? '—' : openTasks.filter(t => t.status === 'submitted').length }}</strong></div><ArrowRightIcon class="shortcut-arrow" /></RouterLink>
+        <RouterLink to="/tasks"><span class="shortcut-icon shortcut-complete"><CheckCircleIcon /></span><div><span class="shortcut-label">Completed</span><strong>{{ engineLoading || engineError ? '—' : doneTasks.length }}</strong></div><ArrowRightIcon class="shortcut-arrow" /></RouterLink>
       </div>
 
       <!-- Scout Invitation Banner -->
@@ -354,13 +357,13 @@ function commentTimeAgo(d: string) {
       </div>
 
       <!-- Main Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="dashboard-columns">
         <!-- Left Column - 2/3 width -->
-        <div class="lg:col-span-2 space-y-8">
+        <div class="dashboard-main-column space-y-8">
           <!-- Mobile quick-glance strip: condensed version of the desktop sidebar
                (profile strength, scout status, collective stats) — on mobile the
                full sidebar cards would otherwise sit below the entire task list. -->
-          <div v-if="authStore.member?.profile" class="lg:hidden flex items-center gap-4 overflow-x-auto bg-white rounded-2xl border border-gray-200 p-4">
+          <div v-if="authStore.member?.profile" class="dashboard-quick-glance flex items-center gap-4 overflow-x-auto bg-white rounded-2xl border border-gray-200 p-4">
             <RouterLink to="/profile/edit" class="flex items-center gap-2.5 shrink-0">
               <span class="w-9 h-9 rounded-full bg-senpai-100 flex items-center justify-center text-sm font-bold text-senpai-600 shrink-0">
                 {{ memberFirstName.charAt(0) }}
@@ -383,27 +386,94 @@ function commentTimeAgo(d: string) {
             </RouterLink>
           </div>
 
-          <!-- Your Cohort — celebratory -->
+          <!-- Assigned work comes before community context. -->
+          <section class="dashboard-task-section" aria-labelledby="dashboard-tasks-title">
+            <div class="flex items-center justify-between mb-4">
+              <h2 id="dashboard-tasks-title" class="text-lg font-semibold text-gray-900">Your tasks</h2>
+              <RouterLink to="/tasks" class="text-sm text-senpai-600">View all tasks <span aria-hidden="true">→</span></RouterLink>
+            </div>
+            <div v-if="engineLoading && !engine" class="dashboard-task-state" role="status"><LoadingSpinner /><p>Loading your workspace…</p></div>
+            <div v-else-if="engineError" class="dashboard-task-state" role="alert"><p>Your tasks couldn’t be loaded.</p><button type="button" class="dashboard-inline-action" @click="loadEngine">Try again</button></div>
+            <div v-else-if="!openTasks.length && !doneTasks.length" class="dashboard-task-state"><ClipboardDocumentListIcon class="task-empty-icon" /><h3>No assigned tasks yet</h3><p>Find a task you can contribute to, or explore a shared project.</p><div><RouterLink to="/tasks/open" class="dashboard-inline-action">Browse open tasks <span aria-hidden="true">→</span></RouterLink><RouterLink to="/projects">Explore projects</RouterLink></div></div>
+            <div v-else class="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100">
+              <!-- Open tasks -->
+              <div v-for="a in openTasks" :key="a.id" class="px-5 py-4">
+                <div class="flex items-start gap-3">
+                  <button type="button" class="task-disclosure shrink-0" @click="toggle(a)" :aria-label="`${expanded[a.id] ? 'Collapse' : 'Expand'} ${a.task?.title || 'task'}`" :aria-expanded="!!expanded[a.id]">
+                    <ChevronDownIcon :class="{ 'rotate-180': expanded[a.id] }" />
+                  </button>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-start justify-between gap-2 flex-wrap">
+                      <button class="text-left font-medium text-gray-900 hover:text-senpai-700" @click="toggle(a)" :aria-expanded="!!expanded[a.id]">{{ a.task?.title }}</button>
+                      <div class="flex items-center gap-2 shrink-0">
+        <span v-if="a.task?.is_required" class="text-[11px] px-1.5 py-0.5 rounded bg-red-50 text-red-600">Required</span>
+                        <span v-if="a.status === 'submitted'" class="text-[11px] text-blue-600">In review</span>
+                        <span v-else-if="a.status === 'returned'" class="text-[11px] text-red-600">Needs changes</span>
+                      </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-0.5">{{ a.task?.description }}</p>
+                    <p v-if="a.task?.due_at" class="text-xs text-gray-400 mt-1 flex items-center gap-1"><ClockIcon class="h-3.5 w-3.5" /> Due {{ formatDate(a.task.due_at) }}</p>
+                    <div v-if="expanded[a.id]" class="mt-3">
+                      <p v-if="a.status === 'returned' && a.review_note" class="text-sm text-red-700 bg-red-50 rounded-lg p-3 mb-3">{{ a.review_note }}</p>
+
+                      <!-- Read-only: already submitted, in review, not currently resubmitting -->
+                      <div v-if="hasBeenSubmitted(a) && !isInputActive(a)" class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                        <p v-if="a.link_url" class="text-sm"><a :href="a.link_url" target="_blank" rel="noopener noreferrer" class="text-senpai-600 hover:underline break-all">{{ a.link_url }}</a></p>
+                        <p v-if="a.body" class="text-sm text-gray-700 whitespace-pre-wrap">{{ a.body }}</p>
+                        <button class="mt-2 text-xs text-gray-500 hover:text-gray-800 font-medium" @click="resubmitting[a.id] = true">Resubmit</button>
+                      </div>
+
+                      <!-- Editable: no submission yet, returned for changes, or explicitly resubmitting -->
+                      <template v-else>
+                        <textarea v-if="a.task?.handin_type === 'text'" v-model="drafts[a.task_id]!.body" rows="3" placeholder="Write your response…" class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-senpai-500" />
+                        <a v-else-if="a.task?.handin_type === 'external_form' && a.task?.external_url" :href="a.task.external_url" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-sm text-senpai-600 font-medium mb-2">Open the form <ArrowTopRightOnSquareIcon class="h-4 w-4" /></a>
+                        <input v-else-if="a.task?.handin_type !== 'none'" v-model="drafts[a.task_id]!.link" type="url" placeholder="https://…" class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-senpai-500" />
+                        <button class="mt-3 px-4 py-2 bg-senpai-600 text-white rounded-lg text-sm font-medium hover:bg-senpai-700 disabled:opacity-50" :disabled="submitting[a.task_id]" @click="submitTask(a)">
+                          {{ submitting[a.task_id] ? 'Submitting…' : hasBeenSubmitted(a) ? 'Resubmit' : a.task?.handin_type === 'none' || a.task?.handin_type === 'external_form' ? 'Mark as done' : 'Submit' }}
+                        </button>
+                      </template>
+
+                      <!-- Comment thread with admins — only relevant once something's been submitted -->
+                      <div v-if="hasBeenSubmitted(a)" class="mt-4 pt-3 border-t border-gray-100">
+                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Comments</p>
+                        <div v-if="loadingComments[a.id]" class="text-xs text-gray-400">Loading…</div>
+                        <div v-else-if="assignmentComments[a.id]?.length" class="space-y-2 mb-2">
+                          <div v-for="c in assignmentComments[a.id]" :key="c.id" class="text-sm bg-gray-50 border border-gray-100 rounded-lg px-3 py-2">
+                            <p class="text-xs text-gray-400 mb-0.5">{{ commentAuthor(c) }} · {{ commentTimeAgo(c.created_at) }}</p>
+                            <p class="text-gray-700 whitespace-pre-wrap">{{ c.body }}</p>
+                          </div>
+                        </div>
+                        <p v-else class="text-xs text-gray-400 italic mb-2">No comments yet.</p>
+                        <div class="flex items-center gap-2">
+                          <input
+                            v-model="newComment[a.id]"
+                            type="text"
+                            placeholder="Reply…"
+                            class="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-senpai-400"
+                            @keyup.enter="postComment(a)"
+                          />
+                          <button class="text-sm text-senpai-600 font-medium hover:text-senpai-700" @click="postComment(a)">Send</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Completed tasks — clearly done -->
+              <div v-for="a in doneTasks" :key="a.id" class="px-5 py-4 flex items-start gap-3 bg-green-50/40">
+                <CheckCircleIcon class="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                <span class="text-sm text-gray-500 line-through flex-1">{{ a.task?.title }}</span>
+                <span class="text-[11px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 font-medium shrink-0">Done</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Your cohort -->
           <div v-if="engine?.membership" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-            <div class="relative px-6 pt-8 pb-6 text-center overflow-hidden">
-              <!-- confetti -->
-              <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-                <circle cx="34" cy="34" r="4" fill="#1D9E75" />
-                <rect x="70" y="20" width="8" height="8" rx="1.5" fill="#378ADD" transform="rotate(20 74 24)" />
-                <circle cx="118" cy="22" r="3" fill="#EF9F27" />
-                <rect x="300" y="26" width="7" height="7" rx="1.5" fill="#D4537E" transform="rotate(-25 303 29)" />
-                <circle cx="350" cy="40" r="4" fill="#7F77DD" />
-                <rect x="372" y="78" width="8" height="8" rx="1.5" fill="#1D9E75" transform="rotate(15 376 82)" />
-                <circle cx="22" cy="92" r="3.5" fill="#D4537E" />
-                <rect x="44" y="120" width="7" height="7" rx="1.5" fill="#EF9F27" transform="rotate(35 47 123)" />
-                <circle cx="360" cy="120" r="3.5" fill="#378ADD" />
-                <rect x="150" y="14" width="6" height="6" rx="1.5" fill="#7F77DD" transform="rotate(-15 153 17)" />
-                <circle cx="250" cy="18" r="3" fill="#1D9E75" />
-                <rect x="20" y="60" width="6" height="6" rx="1.5" fill="#EF9F27" transform="rotate(40 23 63)" />
-              </svg>
+            <div class="cohort-overview px-6 pt-8 pb-6">
               <div class="relative">
-                <div class="text-5xl leading-none select-none">🎉</div>
-                <p class="mt-3 text-xs font-medium uppercase tracking-wider text-senpai-600">You're officially in</p>
+                <AcademicCapIcon class="cohort-icon" aria-hidden="true" />
+                <p class="mt-3 text-xs font-medium uppercase tracking-wider text-senpai-600">Your cohort</p>
                 <p class="font-bold text-2xl text-gray-900 mt-0.5">{{ engine.cohort?.name || 'Your cohort' }}</p>
                 <span class="inline-block mt-3 text-xs px-2.5 py-1 rounded-full bg-senpai-100 text-senpai-700 capitalize">{{ engine.membership.state }}</span>
               </div>
@@ -432,7 +502,7 @@ function commentTimeAgo(d: string) {
               </div>
               <!-- Senpai ID -->
               <div>
-                <p class="text-xs text-gray-500 mb-1">Senpai ID</p>
+                <p class="text-xs text-gray-500 mb-1">SENPAI ID</p>
                 <p v-if="senpaiAddress" class="text-sm font-mono text-gray-900 break-all">{{ senpaiAddress }}</p>
                 <template v-else-if="senpaiIdRevealed && senpaiOptions.length">
                   <p class="text-sm text-gray-900 mb-1.5">Yours to claim — pick one:</p>
@@ -510,7 +580,7 @@ function commentTimeAgo(d: string) {
 
           <!-- Take Action -->
           <div>
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Take Action</h2>
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Build your next connection</h2>
             <div class="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4">
               <RouterLink to="/members" class="bg-white rounded-xl border border-gray-200 p-3 sm:p-5 hover:border-senpai-300 hover:shadow-md transition-all group">
                 <div class="flex items-center gap-3 sm:gap-4">
@@ -562,85 +632,6 @@ function commentTimeAgo(d: string) {
             </div>
           </div>
 
-          <!-- Your Tasks (own section, under Take Action) -->
-          <div v-if="openTasks.length || doneTasks.length">
-            <div class="flex items-center justify-between mb-4">
-              <h2 class="text-lg font-semibold text-gray-900">Your Tasks</h2>
-              <span v-if="doneTasks.length" class="text-sm text-gray-400">{{ doneTasks.length }} done</span>
-            </div>
-            <div class="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100">
-              <!-- Open tasks -->
-              <div v-for="a in openTasks" :key="a.id" class="px-5 py-4">
-                <div class="flex items-start gap-3">
-                  <button class="mt-0.5 h-5 w-5 rounded-full border-2 border-gray-300 shrink-0 flex items-center justify-center" @click="toggle(a)">
-                    <span v-if="a.status === 'submitted'" class="h-2 w-2 rounded-full bg-blue-500" />
-                  </button>
-                  <div class="min-w-0 flex-1">
-                    <div class="flex items-start justify-between gap-2 flex-wrap">
-                      <button class="text-left font-medium text-gray-900 hover:text-senpai-700" @click="toggle(a)">{{ a.task?.title }}</button>
-                      <div class="flex items-center gap-2 shrink-0">
-        <span v-if="a.task?.is_required" class="text-[11px] px-1.5 py-0.5 rounded bg-red-50 text-red-600">Required</span>
-                        <span v-if="a.status === 'submitted'" class="text-[11px] text-blue-600">In review</span>
-                        <span v-else-if="a.status === 'returned'" class="text-[11px] text-red-600">Needs changes</span>
-                      </div>
-                    </div>
-                    <p class="text-sm text-gray-500 mt-0.5">{{ a.task?.description }}</p>
-                    <p v-if="a.task?.due_at" class="text-xs text-gray-400 mt-1 flex items-center gap-1"><ClockIcon class="h-3.5 w-3.5" /> Due {{ formatDate(a.task.due_at) }}</p>
-                    <div v-if="expanded[a.id]" class="mt-3">
-                      <p v-if="a.status === 'returned' && a.review_note" class="text-sm text-red-700 bg-red-50 rounded-lg p-3 mb-3">{{ a.review_note }}</p>
-
-                      <!-- Read-only: already submitted, in review, not currently resubmitting -->
-                      <div v-if="hasBeenSubmitted(a) && !isInputActive(a)" class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                        <p v-if="a.link_url" class="text-sm"><a :href="a.link_url" target="_blank" rel="noopener noreferrer" class="text-senpai-600 hover:underline break-all">{{ a.link_url }}</a></p>
-                        <p v-if="a.body" class="text-sm text-gray-700 whitespace-pre-wrap">{{ a.body }}</p>
-                        <button class="mt-2 text-xs text-gray-500 hover:text-gray-800 font-medium" @click="resubmitting[a.id] = true">Resubmit</button>
-                      </div>
-
-                      <!-- Editable: no submission yet, returned for changes, or explicitly resubmitting -->
-                      <template v-else>
-                        <textarea v-if="a.task?.handin_type === 'text'" v-model="drafts[a.task_id]!.body" rows="3" placeholder="Write your response…" class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-senpai-500" />
-                        <a v-else-if="a.task?.handin_type === 'external_form' && a.task?.external_url" :href="a.task.external_url" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-sm text-senpai-600 font-medium mb-2">Open the form <ArrowTopRightOnSquareIcon class="h-4 w-4" /></a>
-                        <input v-else-if="a.task?.handin_type !== 'none'" v-model="drafts[a.task_id]!.link" type="url" placeholder="https://…" class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-senpai-500" />
-                        <button class="mt-3 px-4 py-2 bg-senpai-600 text-white rounded-lg text-sm font-medium hover:bg-senpai-700 disabled:opacity-50" :disabled="submitting[a.task_id]" @click="submitTask(a)">
-                          {{ submitting[a.task_id] ? 'Submitting…' : hasBeenSubmitted(a) ? 'Resubmit' : a.task?.handin_type === 'none' || a.task?.handin_type === 'external_form' ? 'Mark as done' : 'Submit' }}
-                        </button>
-                      </template>
-
-                      <!-- Comment thread with admins — only relevant once something's been submitted -->
-                      <div v-if="hasBeenSubmitted(a)" class="mt-4 pt-3 border-t border-gray-100">
-                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Comments</p>
-                        <div v-if="loadingComments[a.id]" class="text-xs text-gray-400">Loading…</div>
-                        <div v-else-if="assignmentComments[a.id]?.length" class="space-y-2 mb-2">
-                          <div v-for="c in assignmentComments[a.id]" :key="c.id" class="text-sm bg-gray-50 border border-gray-100 rounded-lg px-3 py-2">
-                            <p class="text-xs text-gray-400 mb-0.5">{{ commentAuthor(c) }} · {{ commentTimeAgo(c.created_at) }}</p>
-                            <p class="text-gray-700 whitespace-pre-wrap">{{ c.body }}</p>
-                          </div>
-                        </div>
-                        <p v-else class="text-xs text-gray-400 italic mb-2">No comments yet.</p>
-                        <div class="flex items-center gap-2">
-                          <input
-                            v-model="newComment[a.id]"
-                            type="text"
-                            placeholder="Reply…"
-                            class="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-senpai-400"
-                            @keyup.enter="postComment(a)"
-                          />
-                          <button class="text-sm text-senpai-600 font-medium hover:text-senpai-700" @click="postComment(a)">Send</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- Completed tasks — clearly done -->
-              <div v-for="a in doneTasks" :key="a.id" class="px-5 py-4 flex items-start gap-3 bg-green-50/40">
-                <CheckCircleIcon class="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                <span class="text-sm text-gray-500 line-through flex-1">{{ a.task?.title }}</span>
-                <span class="text-[11px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 font-medium shrink-0">Done</span>
-              </div>
-            </div>
-          </div>
-
           <!-- What You're Here For -->
           <div class="bg-gray-50 rounded-2xl p-4 sm:p-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Remember Why You're Here</h2>
@@ -670,11 +661,25 @@ function commentTimeAgo(d: string) {
               </div>
             </div>
           </div>
+      <!-- Today's Reminder — always at the top -->
+      <div class="daily-reminder bg-gray-900 rounded-2xl p-6 text-white">
+        <div class="flex items-start gap-4">
+          <div class="shrink-0 w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+            <LightBulbIcon class="h-6 w-6" />
+          </div>
+          <div>
+            <p class="text-sm text-gray-400 mb-1">Today's Reminder</p>
+            <h3 class="text-lg font-semibold mb-2">{{ dailyValue?.name || 'Daily Value' }}</h3>
+            <p class="text-gray-300 text-sm">{{ dailyValue?.insight || 'Focus on growth and collaboration' }}</p>
+          </div>
+        </div>
+      </div>
+
         </div>
 
         <!-- Right Column - 1/3 width. Hidden on mobile — the quick-glance strip
              above the fold covers it there; the full cards are desktop-only. -->
-        <div class="hidden lg:block space-y-6">
+        <div class="dashboard-side-column space-y-6">
           <!-- Profile Card -->
           <div v-if="authStore.member?.profile" class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
             <div class="bg-gray-900 px-6 py-4">
@@ -682,8 +687,9 @@ function commentTimeAgo(d: string) {
             </div>
             <div class="p-6">
               <div class="flex items-center gap-4 mb-4">
-                <div class="w-14 h-14 bg-senpai-100 rounded-full flex items-center justify-center">
-                  <span class="text-xl font-bold text-senpai-600">
+                <div class="w-14 h-14 bg-senpai-100 rounded-full flex items-center justify-center overflow-hidden shrink-0">
+                  <img v-if="authStore.member.profile.photo_url" :src="authStore.member.profile.photo_url" alt="" class="w-full h-full object-cover" />
+                  <span v-if="!authStore.member.profile.photo_url" class="text-xl font-bold text-senpai-600">
                     {{ memberFirstName.charAt(0) }}
                   </span>
                 </div>
@@ -798,3 +804,50 @@ function commentTimeAgo(d: string) {
     </div>
   </AppLayout>
 </template>
+
+<style scoped>
+.dashboard-heading { padding-bottom: 4px; }
+.dashboard-heading h1 { font-size: 28px; }
+.dashboard-heading p.text-lg { font-size: 14px; margin-top: 8px; }
+.dashboard-member-since p { font-size: 11px; }
+.dashboard-member-since .font-medium { margin-top: 5px; font-size: 12px; }
+.dashboard-shortcuts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 30px; }
+.dashboard-shortcuts > a { display: flex; align-items: center; gap: 14px; padding: 20px; border: 1px solid #e5eaf0; border-radius: 10px; background: #fff; }
+.dashboard-shortcuts > a:hover { border-color: #afd6d5; }
+.shortcut-icon { width: 42px; height: 42px; display: grid; place-items: center; flex-shrink: 0; background: #eaf7f6; color: #148b8c; border-radius: 10px; }
+.shortcut-icon svg { width: 21px; height: 21px; }
+.shortcut-review { background: #fff6e5; color: #bf8a28; }
+.shortcut-complete { background: #edf6ee; color: #588b62; }
+.shortcut-label { font-size: 11px; color: #84909e; display: block; }
+.dashboard-shortcuts strong { font-size: 26px; font-weight: 650; color: #253349; line-height: 1.4; }
+.shortcut-arrow { width: 16px; height: 16px; margin-left: auto; color: #adb8c4; }
+.dashboard-columns { display: grid; grid-template-columns: minmax(0, 1fr) 290px; align-items: start; gap: 24px; }
+.dashboard-main-column { min-width: 0; }
+.task-disclosure { display: grid; place-items: center; width: 28px; height: 28px; margin-top: -2px; color: #8897a7; border-radius: 5px; background: #f4f7fa; }
+.task-disclosure svg { width: 16px; height: 16px; }
+.dashboard-quick-glance { display: none; }
+.dashboard-main-column h2, .dashboard-side-column h3 { font-size: 15px; font-weight: 650; }
+.dashboard-task-state { border: 1px solid #e5eaf0; background: #fff; border-radius: 10px; padding: 32px 24px; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.dashboard-task-state h3 { font-size: 15px; font-weight: 600; }
+.dashboard-task-state p { font-size: 13px; line-height: 1.7; color: #84909e; }
+.dashboard-task-state > div { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin-top: 6px; font-size: 12px; color: #68758a; }
+.dashboard-inline-action { color: #097d7e; font-weight: 600; font-size: 12px; }
+.task-empty-icon { width: 30px; height: 30px; color: #9fafbe; }
+.cohort-overview { background: #f0f7f9; padding-block: 20px; }
+.cohort-overview > div { padding-left: 48px; }
+.cohort-icon { position: absolute; left: 0; top: 3px; width: 30px; height: 30px; color: #5d91a0; }
+.cohort-overview p.mt-3 { margin-top: 0; font-size: 10px; color: #698a99; }
+.cohort-overview .text-2xl { font-size: 19px; font-weight: 600; }
+.cohort-overview .rounded-full { margin-top: 8px; }
+.daily-reminder { background: #f0f4f8; color: #344054; border: 1px solid #e4eaf0; }
+.daily-reminder .text-gray-400 { color: #8a97a7; font-size: 11px; }
+.daily-reminder .text-gray-300 { color: #69778b; font-size: 12px; line-height: 1.8; }
+.daily-reminder h3 { font-size: 15px; }
+.daily-reminder .bg-white\/10 { background: #e4edf1; color: #658998; width: 36px; height: 36px; border-radius: 8px; }
+.dashboard-side-column .bg-gray-900 { background: #f4f7fa; color: #475467; border-bottom: 1px solid #e5eaf0; }
+.dashboard-side-column .bg-gray-900 .text-white { color: #475467; }
+.dashboard-side-column .bg-gradient-to-br { background: #f0f9f8; border-color: #d6eae7; }
+.member-dashboard p { overflow-wrap: anywhere; }
+@media (max-width: 1199px) { .dashboard-columns { grid-template-columns: minmax(0, 1fr) 250px; gap: 20px; } .dashboard-shortcuts > a { padding: 16px; gap: 10px; } .shortcut-arrow { display: none; } }
+@media (max-width: 767px) { .dashboard-quick-glance { display: flex; } .dashboard-columns { grid-template-columns: 1fr; } .dashboard-side-column { display: none; } .dashboard-shortcuts { gap: 10px; } .dashboard-shortcuts > a { padding: 14px; flex-direction: column; align-items: flex-start; gap: 10px; } .shortcut-icon { width: 32px; height: 32px; border-radius: 8px; } .shortcut-icon svg { width: 18px; height: 18px; } .shortcut-label { font-size: 10px; } .dashboard-shortcuts strong { font-size: 24px; } }
+</style>

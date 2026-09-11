@@ -77,144 +77,80 @@ const hasAnyContent = computed(() =>
 </script>
 
 <template>
-  <div class="max-w-2xl mx-auto">
-    <!-- Identity -->
-    <div class="flex items-start gap-4 pb-6 border-b border-gray-200">
-      <div v-if="photoUrl" class="h-20 w-20 sm:h-24 sm:w-24 rounded-full overflow-hidden bg-gray-100 shrink-0">
-        <img :src="photoUrl" :alt="fullName" class="h-full w-full object-cover" />
-      </div>
-      <div v-else class="h-20 w-20 sm:h-24 sm:w-24 rounded-full bg-senpai-100 flex items-center justify-center shrink-0">
-        <span v-if="fullName" class="text-2xl font-semibold text-senpai-600">{{ initials }}</span>
-        <UserCircleIcon v-else class="h-12 w-12 text-gray-400" />
-      </div>
-
-      <div class="flex-1 min-w-0">
-        <div class="flex flex-wrap items-center gap-2">
-          <h1 class="text-2xl font-bold text-gray-900">{{ fullName }}</h1>
-          <span
-            v-if="isOGMember"
-            class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-senpai-50 text-senpai-700"
-          >
-            <SparklesSolidIcon class="h-3 w-3" /> OG
-          </span>
-          <span
-            v-for="role in roles"
-            :key="role.id"
-            :class="['inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium', getRoleStyle(role.name).bg, getRoleStyle(role.name).text]"
-          >
-            <component :is="getRoleStyle(role.name).icon" :class="['h-3 w-3', getRoleStyle(role.name).iconColor]" />
-            {{ role.name.charAt(0).toUpperCase() + role.name.slice(1) }}
-          </span>
-          <span
-            v-if="mbti"
-            class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border border-gray-300 text-gray-600"
-          >
-            {{ mbti }}
-          </span>
+  <div class="member-profile-display">
+    <header class="profile-identity-panel">
+      <div class="profile-identity">
+        <div class="profile-portrait"><img v-if="photoUrl" :src="photoUrl" :alt="fullName" /><span v-else-if="fullName">{{ initials }}</span><UserCircleIcon v-else /></div>
+        <div class="profile-identity-copy"><h1>{{ fullName || 'Member profile' }}</h1><p v-if="subtitle" class="profile-subtitle">{{ subtitle }}</p><p v-if="memberSince" class="profile-membership">{{ memberSince }}</p>
+          <div class="profile-badges"><span v-if="isOGMember" class="profile-badge bg-senpai-50 text-senpai-700"><SparklesSolidIcon />OG member</span><span v-for="role in roles" :key="role.id" :class="['profile-badge', getRoleStyle(role.name).bg, getRoleStyle(role.name).text]"><component :is="getRoleStyle(role.name).icon" />{{ role.name.charAt(0).toUpperCase() + role.name.slice(1) }}</span><span v-if="mbti" class="profile-badge bg-gray-100 text-gray-600">{{ mbti }}</span></div>
         </div>
-        <p v-if="subtitle" class="text-gray-600 mt-0.5">{{ subtitle }}</p>
-        <p v-if="experienceLabel" class="text-gray-600 mt-1">{{ experienceLabel }}</p>
-        <p v-if="memberSince" class="text-sm text-gray-400 mt-1">{{ memberSince }}</p>
+        <RouterLink v-if="editHref" :to="editHref" class="profile-edit-action"><PencilIcon />Edit profile</RouterLink>
       </div>
-
-      <RouterLink
-        v-if="editHref"
-        :to="editHref"
-        class="shrink-0 inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-      >
-        <PencilIcon class="h-4 w-4 mr-1.5" />
-        Edit
-      </RouterLink>
-    </div>
-
-    <!-- Goal -->
-    <div v-if="goal" class="py-6 border-b border-gray-200">
-      <p class="font-voice text-lg text-gray-900 leading-relaxed">"{{ goal }}"</p>
-    </div>
-
-    <!-- About, with schooling as a quiet contextual line underneath -->
-    <div v-if="bio || schoolLine" class="py-6 border-b border-gray-200">
-      <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">About</h2>
-      <p v-if="bio" class="text-gray-700 leading-relaxed whitespace-pre-line">{{ bio }}</p>
-      <p v-if="schoolLine" class="flex items-center gap-1.5 text-sm text-gray-500 mt-3">
-        <AcademicCapIcon class="h-4 w-4" /> {{ schoolLine }}
-      </p>
-    </div>
-
-    <!-- Links — moved up, right after About -->
-    <div v-if="links.length > 0" class="py-6 border-b border-gray-200">
-      <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Links</h2>
-      <div class="flex flex-wrap gap-2">
-        <a
-          v-for="link in links"
-          :key="link.url"
-          :href="link.url"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 rounded-lg text-sm text-gray-700 hover:border-senpai-400 hover:text-senpai-700 transition-colors"
-        >
-          <GlobeAltIcon v-if="link.label === 'Portfolio'" class="h-4 w-4" />
-          <LinkIcon v-else class="h-4 w-4" />
-          {{ link.label }}
-        </a>
+    </header>
+    <div class="profile-content-grid">
+      <div class="profile-main">
+        <section v-if="goal" class="profile-goal"><h2>What I’m working toward</h2><p>{{ goal }}</p></section>
+        <section v-if="bio || schoolLine" class="profile-section"><h2>About</h2><p v-if="bio" class="profile-body">{{ bio }}</p><p v-if="schoolLine" class="profile-context"><AcademicCapIcon />{{ schoolLine }}</p></section>
+        <section v-if="recentWork || workLine" class="profile-section"><h2>What I’m building</h2><p v-if="recentWork" class="profile-body">{{ recentWork }}</p><p v-if="workLine" class="profile-context"><BriefcaseIcon />{{ workLine }}</p></section>
+        <section v-if="uniqueView" class="profile-section"><h2>My perspective</h2><p class="profile-body">{{ uniqueView }}</p></section>
+        <div v-if="memberId" class="profile-record"><SkillStatusChips :member-id="memberId" /><ReviewsReceived :member-id="memberId" /></div>
+        <section v-if="!hasAnyContent" class="profile-empty"><UserCircleIcon /><h2>{{ editHref ? 'Your profile is just getting started' : 'More about this member, soon' }}</h2><p>{{ editHref ? "Add a bio, your skills, and a few links so the collective can see what you're about." : "This member hasn't filled in their profile yet." }}</p><RouterLink v-if="editHref" :to="editHref" class="profile-edit-action"><PencilIcon />Edit your profile</RouterLink></section>
       </div>
-    </div>
-
-    <!-- Skills -->
-    <div v-if="skills.length > 0" class="py-6 border-b border-gray-200">
-      <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Skills</h2>
-      <div class="flex flex-wrap gap-2">
-        <span
-          v-for="skill in skills"
-          :key="skill.id"
-          :class="[
-            'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium',
-            skill.id === primarySkillId ? 'bg-senpai-100 text-senpai-700' : 'bg-gray-100 text-gray-700'
-          ]"
-        >
-          {{ skill.name }}
-        </span>
-      </div>
-    </div>
-
-    <!-- Skill verification -->
-    <SkillStatusChips v-if="memberId" :member-id="memberId" />
-    <ReviewsReceived v-if="memberId" :member-id="memberId" />
-
-    <!-- Building, with work status as a quiet contextual line underneath -->
-    <div v-if="recentWork || workLine" class="py-6 border-b border-gray-200">
-      <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Building</h2>
-      <p v-if="recentWork" class="text-gray-700 leading-relaxed whitespace-pre-line">{{ recentWork }}</p>
-      <p v-if="workLine" class="flex items-center gap-1.5 text-sm text-gray-500 mt-3">
-        <BriefcaseIcon class="h-4 w-4" /> {{ workLine }}
-      </p>
-    </div>
-
-    <!-- Unique view — now the last content section before logistics -->
-    <div v-if="uniqueView" :class="['py-6', logisticsLine ? 'border-b border-gray-200' : '']">
-      <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Unique view</h2>
-      <p class="text-gray-700 leading-relaxed whitespace-pre-line">{{ uniqueView }}</p>
-    </div>
-
-    <!-- Logistics — quiet, last -->
-    <p v-if="logisticsLine" class="pt-6 text-sm text-gray-400">{{ logisticsLine }}</p>
-
-    <!-- Empty state -->
-    <div v-if="!hasAnyContent" class="text-center py-12">
-      <UserCircleIcon class="mx-auto h-12 w-12 text-gray-300" />
-      <h3 class="mt-4 text-lg font-medium text-gray-900">
-        {{ editHref ? "Your profile is just getting started" : "This profile is still pretty empty" }}
-      </h3>
-      <p class="mt-2 text-gray-500">
-        {{ editHref ? "Add a bio, your skills, and a few links so the collective can see what you're about." : "This member hasn't filled in their profile yet." }}
-      </p>
-      <RouterLink
-        v-if="editHref"
-        :to="editHref"
-        class="mt-5 inline-flex items-center px-4 py-2 bg-senpai-600 text-white rounded-lg text-sm font-medium hover:bg-senpai-700"
-      >
-        <PencilIcon class="h-4 w-4 mr-1.5" /> Edit your profile
-      </RouterLink>
+      <aside v-if="skills.length || links.length || experienceLabel || logisticsLine" class="profile-details">
+        <section v-if="skills.length || experienceLabel" class="profile-section"><h2>Skills & experience</h2><p v-if="experienceLabel" class="profile-experience">{{ experienceLabel }}<small>Self-described experience</small></p><div class="profile-skills"><span v-for="skill in skills" :key="skill.id" :class="['profile-skill', { 'profile-primary-skill': skill.id === primarySkillId }]">{{ skill.name }}<small v-if="skill.id === primarySkillId">Primary</small></span></div></section>
+        <section v-if="links.length" class="profile-section"><h2>Portfolio & links</h2><div class="profile-links"><a v-for="link in links" :key="link.url" :href="link.url" target="_blank" rel="noopener noreferrer"><GlobeAltIcon v-if="link.label === 'Portfolio'" /><LinkIcon v-else /><span>{{ link.label }}</span><span aria-hidden="true">↗</span></a></div></section>
+        <section v-if="logisticsLine" class="profile-section"><h2>A little more about me</h2><p class="profile-body">{{ logisticsLine }}</p></section>
+      </aside>
     </div>
   </div>
 </template>
+
+<style scoped>
+.member-profile-display { width: 100%; container-type: inline-size; color: #344054; }
+.profile-identity-panel { background: #fff; border: 1px solid #e3e9ef; border-radius: 12px; overflow: hidden; }
+.profile-identity-panel::before { content: ''; display: block; height: 7px; background: #b7dfdf; }
+.profile-identity { padding: 30px; display: flex; align-items: flex-start; gap: 22px; }
+.profile-portrait { display: grid; place-items: center; width: 88px; height: 88px; flex: 0 0 88px; border-radius: 20px; background: #eaf4f5; color: #397d88; overflow: hidden; }
+.profile-portrait img { width: 100%; height: 100%; object-fit: cover; }
+.profile-portrait span { font-size: 28px; font-weight: 600; }
+.profile-portrait svg { width: 45px; height: 45px; }
+.profile-identity-copy { min-width: 0; flex: 1; }
+.profile-identity h1 { font-size: 27px; line-height: 1.2; letter-spacing: -.65px; font-weight: 650; overflow-wrap: anywhere; }
+.profile-subtitle { font-size: 13px; line-height: 1.7; color: #607086; margin-top: 8px; }
+.profile-membership { font-size: 11px; line-height: 1.7; color: #738195; margin-top: 5px; }
+.profile-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 13px; }
+.profile-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 550; padding: 4px 8px; border-radius: 5px; }
+.profile-badge svg { width: 12px; height: 12px; }
+.profile-edit-action { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 12px; font-size: 12px; font-weight: 550; white-space: nowrap; color: #4f6074; background: #fff; border: 1px solid #d7e0e8; border-radius: 7px; }
+.profile-edit-action svg { width: 15px; height: 15px; }
+.profile-edit-action:hover { background: #f6f9fb; }
+.profile-content-grid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 22px; margin-top: 22px; align-items: start; }
+.profile-main, .profile-details { display: grid; gap: 18px; min-width: 0; }
+.profile-main:only-child { grid-column: 1 / -1; }
+.profile-section, .profile-empty { border: 1px solid #e3e9ef; background: #fff; padding: 24px; border-radius: 10px; min-width: 0; }
+.member-profile-display h2 { font-size: 13px; line-height: 1.5; font-weight: 650; color: #3b485e; margin-bottom: 14px; }
+.profile-body { font-size: 13px; line-height: 1.85; color: #5c6c82; white-space: pre-line; overflow-wrap: anywhere; }
+.profile-context { display: flex; align-items: flex-start; gap: 8px; margin-top: 18px; color: #6d7e90; font-size: 11px; line-height: 1.7; }
+.profile-context svg { width: 16px; height: 16px; flex-shrink: 0; }
+.profile-goal { background: #edf7f7; border: 1px solid #d5e9e8; border-radius: 10px; padding: 22px 24px; }
+.profile-goal h2 { color: #437f81; font-size: 11px; margin-bottom: 8px; }
+.profile-goal p { color: #375d69; font-size: 16px; line-height: 1.65; overflow-wrap: anywhere; }
+.profile-experience { font-size: 12px; color: #566579; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid #edf0f4; }
+.profile-experience small { display: block; font-size: 10px; color: #738195; margin-top: 4px; }
+.profile-skills { display: flex; flex-wrap: wrap; gap: 7px; }
+.profile-skill { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 11px; line-height: 1.6; padding: 5px 8px; border: 1px solid #e6ebf0; background: #f8fafc; border-radius: 5px; color: #5c6c82; }
+.profile-primary-skill { border-color: #c5e4e2; color: #1b7b7d; background: #eff9f8; }
+.profile-skill small { font-size: 9px; opacity: .8; }
+.profile-links { display: grid; gap: 8px; }
+.profile-links a { display: flex; align-items: center; gap: 9px; padding: 10px; border: 1px solid #e5eaf0; border-radius: 7px; font-size: 12px; color: #576b80; }
+.profile-links a svg { width: 15px; height: 15px; flex-shrink: 0; }
+.profile-links a span:nth-child(2) { flex: 1; overflow-wrap: anywhere; }
+.profile-links a:hover { color: #087d7e; border-color: #a4d6d5; }
+.profile-record { display: contents; }
+.profile-record :deep(> div) { border: 1px solid #e3e9ef; background: #fff; padding: 24px; border-radius: 10px; }
+.profile-record :deep(h2) { text-transform: none; letter-spacing: 0; }
+.profile-empty > svg { width: 32px; height: 32px; color: #9aa9b6; margin-bottom: 16px; }
+.profile-empty p { font-size: 13px; color: #708195; line-height: 1.8; margin-bottom: 18px; }
+@container (max-width: 760px) { .profile-content-grid { grid-template-columns: 1fr; } .profile-details { grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr)); } .profile-identity { flex-wrap: wrap; padding: 22px; gap: 16px; } .profile-identity h1 { font-size: 24px; } .profile-portrait { width: 68px; height: 68px; flex-basis: 68px; border-radius: 15px; } .profile-edit-action { margin-left: auto; } }
+@container (max-width: 400px) { .profile-identity { padding: 20px; gap: 14px; } .profile-identity-copy { flex-basis: calc(100% - 84px); } .profile-identity > .profile-edit-action { width: 100%; } .profile-section, .profile-empty { padding: 20px; } .profile-identity h1 { font-size: 22px; } }
+</style>

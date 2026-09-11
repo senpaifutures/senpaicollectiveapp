@@ -54,13 +54,13 @@ function handleComplete() {
 </script>
 
 <template>
-  <div class="fixed inset-0 z-50 overflow-y-auto">
+  <div class="welcome-flow fixed inset-0 z-50 overflow-y-auto">
     <!-- Backdrop -->
     <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" />
 
     <!-- Modal -->
     <div class="relative min-h-screen flex items-center justify-center p-4">
-      <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
+      <div class="welcome-panel relative w-full overflow-hidden">
         <!-- Progress dots -->
         <div class="absolute top-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
           <div
@@ -74,14 +74,9 @@ function handleComplete() {
         <!-- Slide 1: Welcome -->
         <div v-if="currentSlide === 0" class="p-8 pt-12">
           <div class="text-center mb-6">
-            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 mb-4">
-              <svg class="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" />
-              </svg>
-            </div>
+            <img src="/senpai_logo.svg" width="64" height="64" alt="SENPAI COLLECTIVE" class="welcome-logo" />
             <h2 class="text-2xl font-bold text-gray-900 mb-2">
-              Welcome to Senpai, {{ memberName }}!
+              Welcome to SENPAI, {{ memberName }}!
             </h2>
             <p class="text-gray-600">
               You've been approved. Let's build something great.
@@ -110,8 +105,8 @@ function handleComplete() {
         <!-- Slide 2: The Pledge -->
         <div v-if="currentSlide === 1" class="p-8 pt-12">
           <div class="text-center mb-4">
-            <h2 class="text-xl font-bold text-gray-900 mb-1">The Senpai Pledge</h2>
-            <p class="text-sm text-gray-500">As a member of the Senpai Collective, you commit to:</p>
+            <h2 class="text-xl font-bold text-gray-900 mb-1">The SENPAI Pledge</h2>
+            <p class="text-sm text-gray-500">As a member of the SENPAI COLLECTIVE, you commit to:</p>
           </div>
 
           <div class="bg-gray-50 rounded-xl p-6 mb-6 border-2 border-gray-200">
@@ -216,3 +211,17 @@ function handleComplete() {
     </div>
   </div>
 </template>
+
+<style scoped>
+.welcome-panel { max-width: 580px; background: #fcfdf9; border: 1px solid #cbd8c6; box-shadow: 0 24px 80px #14281e33; color: #213b2b; }
+.welcome-logo { display: block; width: 64px; height: 64px; object-fit: contain; margin: 0 auto 22px; }
+.welcome-panel h2 { font-size: 28px; font-weight: 550; line-height: 1.2; letter-spacing: -.7px; color: #213b2b; }
+.welcome-panel p { line-height: 1.8; }
+.welcome-panel .bg-gray-50 { background: #edf3e7; border-color: #d1dfc8; border-radius: 2px; }
+.welcome-panel .bg-gray-900 { background: #213b2c; border-radius: 2px; }
+.welcome-panel input[type='checkbox'] { accent-color: #277d64; flex-shrink: 0; }
+.welcome-panel :deep(button) { min-height: 46px; border-radius: 2px; }
+.welcome-panel :deep(button.bg-senpai-500) { background: #1b3529; }
+.welcome-panel :deep(button:disabled) { opacity: .5; }
+@media (max-width: 480px) { .welcome-panel > .p-8 { padding: 46px 22px 26px; } .welcome-panel h2 { font-size: 25px; } .welcome-panel .p-6 { padding: 22px 18px; } }
+</style>

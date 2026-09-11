@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 import { baselinesApi } from '@/api'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
@@ -119,7 +119,7 @@ async function save() {
 
 <template>
   <AppLayout>
-    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="baseline-page">
       <p class="text-sm font-bold text-senpai-500 uppercase tracking-widest mb-2">Before you start</p>
       <h1 class="text-3xl font-bold text-gray-900">Where you're starting from</h1>
       <p class="text-gray-600 mt-3">
@@ -133,10 +133,10 @@ async function save() {
 
       <div v-if="loading" class="flex justify-center py-16"><LoadingSpinner size="lg" /></div>
 
-      <form v-else class="mt-8 space-y-10" @submit.prevent="save">
+      <form v-else class="baseline-form" @submit.prevent="save">
         <BaseAlert v-if="error" type="error">{{ error }}</BaseAlert>
 
-        <section class="space-y-4">
+        <section class="baseline-section space-y-4">
           <div>
             <h2 class="text-lg font-bold text-gray-900">What you earn now</h2>
             <p class="text-sm text-gray-500">Every field here is optional. Skip anything you'd rather not answer.</p>
@@ -190,7 +190,7 @@ async function save() {
           <BaseInput v-if="form.has_ownership_stake === 'yes'" v-model="form.ownership_detail" label="What is it?" placeholder="A product, a company, a stake…" />
         </section>
 
-        <section class="space-y-4 border-t border-gray-200 pt-8">
+        <section class="baseline-section space-y-4">
           <div>
             <h2 class="text-lg font-bold text-gray-900">Being locked out</h2>
             <p class="text-sm text-gray-500">
@@ -204,25 +204,48 @@ async function save() {
           <BaseSelect v-model="form.obscures_location" :options="yesNo" label="Do you currently hide or obscure your location to get work?" placeholder="Prefer not to say" />
         </section>
 
-        <section class="space-y-4 border-t border-gray-200 pt-8">
+        <section class="baseline-section space-y-4">
           <h2 class="text-lg font-bold text-gray-900">Where you are today</h2>
           <BaseInput v-model="form.portfolio_url" label="Portfolio link" placeholder="https://" />
           <BaseInput v-model="form.hours_per_week" type="number" label="Hours a week you genuinely have" placeholder="10" />
           <BaseTextarea v-model="form.goal_in_own_words" label="What do you want out of this?" :rows="3" placeholder="In your own words." />
         </section>
 
-        <section class="space-y-3 border-t border-gray-200 pt-8">
+        <section class="baseline-section baseline-consent space-y-3">
           <h2 class="text-lg font-bold text-gray-900">Permission</h2>
           <p class="text-sm text-gray-500">Two separate questions. Either can be no.</p>
           <BaseCheckbox v-model="form.consent_anonymised" label="Use my numbers anonymously" description="Aggregated with everyone else's. Nothing identifies you." />
           <BaseCheckbox v-model="form.consent_named_story" label="You may tell my story with my name on it" description="Only ever with a version you've seen first." />
         </section>
 
-        <div class="flex items-center gap-4 border-t border-gray-200 pt-8">
-          <BaseButton type="submit" :loading="saving">Save</BaseButton>
+        <div class="baseline-actions">
+          <BaseButton type="submit" class="baseline-save" :loading="saving">Save</BaseButton>
           <RouterLink to="/dashboard" class="text-sm text-gray-500 hover:text-gray-700">Do this later</RouterLink>
         </div>
       </form>
     </div>
   </AppLayout>
 </template>
+
+<style scoped>
+.baseline-page { width: min(850px, calc(100% - 48px)); margin: 0 auto; padding: 48px 0 64px; color: #162b23; }
+.baseline-page > p:first-child { color: #587361; font-size: 12px; letter-spacing: 1.7px; }
+.baseline-page > h1 { color: #162b23; font-size: 42px; font-weight: 550; letter-spacing: -1.3px; line-height: 1.15; }
+.baseline-page > p { max-width: 740px; font-size: 16px; line-height: 1.85; color: #627060; }
+.baseline-form { margin-top: 32px; padding: 36px; background: #fcfdf9; border: 1px solid #d1ddcc; counter-reset: section; }
+.baseline-section { counter-increment: section; padding-bottom: 32px; }
+.baseline-section + .baseline-section { padding-top: 32px; border-top: 1px solid #d1ddcc; }
+.baseline-section h2 { display: flex; align-items: center; gap: 14px; font-size: 22px; line-height: 1.3; letter-spacing: -.5px; font-weight: 550; color: #223e2b; margin-bottom: 12px; }
+.baseline-section h2::before { content: '0' counter(section); display: grid; place-items: center; width: 32px; height: 32px; flex: 0 0 32px; background: #e2eeda; font-size: 12px; font-family: monospace; letter-spacing: 0; color: #50724b; }
+.baseline-section p { font-size: 14px; line-height: 1.8; color: #647260; }
+.baseline-section :deep(input:not([type='checkbox'])), .baseline-section :deep(textarea), .baseline-section :deep(button[aria-haspopup='listbox']) { min-height: 49px; font-size: 16px; border-radius: 3px; padding-top: 12px; padding-bottom: 12px; background: white; }
+.baseline-section :deep(.border-gray-300) { border-color: #c6d3c5; }
+.baseline-section :deep(textarea) { resize: vertical; line-height: 1.8; }
+.baseline-section :deep(label) { font-size: 14px; line-height: 1.7; }
+.baseline-section :deep(input[type='checkbox']) { width: 18px; height: 18px; accent-color: #277d64; }
+.baseline-consent { background: #edf3e7; padding: 26px; margin-bottom: 30px; border: 1px solid #d4dfcc; }
+.baseline-actions { display: flex; align-items: center; gap: 24px; padding-top: 26px; border-top: 1px solid #d1ddcc; }
+.baseline-save { background: #1b3529; color: white; border: 1px solid #1b3529; min-height: 50px; padding: 14px 30px; border-radius: 2px; font-size: 15px; }
+.baseline-save:hover { background: #2b5140; }
+@media (max-width: 640px) { .baseline-page { width: calc(100% - 28px); padding-top: 32px; } .baseline-page > h1 { font-size: 34px; } .baseline-form { padding: 24px 20px; } .baseline-section h2 { font-size: 20px; } .baseline-section :deep(.grid-cols-3) { grid-template-columns: 1fr; } .baseline-section :deep(.col-span-2) { grid-column: auto; } .baseline-consent { padding: 22px 16px; } }
+</style>

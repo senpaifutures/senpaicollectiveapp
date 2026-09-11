@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PublicLayout from '@/components/layout/PublicLayout.vue'
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { membersApi } from '@/api'
@@ -81,31 +82,8 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16 items-center">
-          <RouterLink to="/" class="text-2xl font-bold text-indigo-600">Senpai</RouterLink>
-          <div class="flex items-center gap-4">
-            <RouterLink
-              to="/login"
-              class="text-sm font-medium text-gray-700 hover:text-indigo-600"
-            >
-              Sign in
-            </RouterLink>
-            <RouterLink
-              to="/join"
-              class="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700"
-            >
-              Join Now
-            </RouterLink>
-          </div>
-        </div>
-      </div>
-    </nav>
-
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <PublicLayout>
+    <div class="profile-shell">
       <!-- Loading -->
       <div v-if="loading" class="flex justify-center py-12">
         <LoadingSpinner size="lg" />
@@ -114,7 +92,7 @@ onMounted(async () => {
       <!-- Error / Not Found -->
       <div v-else-if="error || !member" class="text-center py-12 bg-white rounded-lg">
         <UserCircleIcon class="mx-auto h-12 w-12 text-gray-400" />
-        <h3 class="mt-4 text-lg font-medium text-gray-900">Profile not found</h3>
+        <h1 class="mt-4 text-lg font-medium text-gray-900">Profile not found</h1>
         <p class="mt-2 text-gray-600">
           This profile doesn't exist or is not publicly available.
         </p>
@@ -130,7 +108,7 @@ onMounted(async () => {
       <template v-else>
         <!-- Profile Header -->
         <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-          <div class="h-32 bg-gradient-to-r from-indigo-500 to-indigo-600" />
+          <div class="profile-cover"><span>SENPAI COLLECTIVE · Our people</span><img src="/illustrations/collective-orbit.svg" width="600" height="300" alt="" /></div>
           <div class="px-6 pb-6">
             <div class="flex flex-col sm:flex-row sm:items-end -mt-12 sm:-mt-16">
               <div class="flex-shrink-0">
@@ -273,7 +251,7 @@ onMounted(async () => {
         <div class="mt-8 bg-indigo-50 rounded-lg p-6 text-center">
           <h3 class="font-semibold text-indigo-900 mb-2">Want to connect with {{ member.full_name.split(' ')[0] }}?</h3>
           <p class="text-indigo-700 text-sm mb-4">
-            Join the Senpai Collective to connect with talented creatives like {{ member.full_name.split(' ')[0] }}.
+            Apply to join the SENPAI COLLECTIVE to connect with talented creatives like {{ member.full_name.split(' ')[0] }}.
           </p>
           <RouterLink
             to="/join"
@@ -284,5 +262,25 @@ onMounted(async () => {
         </div>
       </template>
     </div>
-  </div>
+  </PublicLayout>
 </template>
+
+<style scoped>
+.profile-shell { width: min(900px, calc(100% - 48px)); margin: 48px auto 72px; overflow-wrap: anywhere; }
+.profile-shell .shadow-sm { box-shadow: none; border: 1px solid #d5dfd4; border-radius: 3px; }
+.profile-cover { height: 160px; background: #dfebd6; display: flex; justify-content: space-between; align-items: flex-start; padding: 28px 32px; overflow: hidden; }
+.profile-cover > span { color: #57714b; font-size: 11px; line-height: 1.7; letter-spacing: 1.5px; text-transform: uppercase; }
+.profile-cover img { width: 230px; height: 115px; object-fit: contain; flex-shrink: 0; opacity: .75; margin-top: -8px; }
+.profile-shell h1 { color: #233d2a; font-size: 32px; line-height: 1.25; font-weight: 550; letter-spacing: -1px; }
+.profile-shell h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 1.3px; font-weight: 600; color: #53714b; }
+.profile-shell p { font-size: 15px; line-height: 1.85; }
+.profile-shell .bg-indigo-50 { background: #ecf3e5; }
+.profile-shell .bg-indigo-100 { background: #dcecd1; }
+.profile-shell .text-indigo-500, .profile-shell .text-indigo-600, .profile-shell .text-indigo-700, .profile-shell .text-indigo-800, .profile-shell .text-indigo-900 { color: #2e7255; }
+.profile-shell a.bg-indigo-600 { color: #fff; background: #242828; border-radius: 2px; min-height: 48px; }
+.profile-shell a.bg-indigo-600:hover { background: #383e3e; }
+.profile-shell a.flex svg { flex-shrink: 0; }
+.profile-shell > .bg-white.p-6 { padding: 30px; }
+.profile-shell > .bg-indigo-50 { padding: 32px; border: 1px solid #d1dfc6; border-radius: 3px; }
+@media (max-width: 640px) { .profile-shell { width: calc(100% - 40px); margin-block: 30px 54px; } .profile-cover { height: 144px; padding: 20px; } .profile-cover > span { max-width: 140px; font-size: 10px; } .profile-cover img { width: 140px; height: 100px; margin-right: -24px; } .profile-shell h1 { font-size: 28px; } .profile-shell > .bg-white.p-6 { padding: 24px; } }
+</style>

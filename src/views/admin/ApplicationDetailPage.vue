@@ -110,7 +110,7 @@ async function handleDecline() {
 
 <template>
   <AdminLayout back-to="/admin/applications" back-label="Back to Applications">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="people-review-page max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Loading -->
       <div v-if="loading" class="flex justify-center py-12">
         <LoadingSpinner size="lg" />
@@ -133,18 +133,18 @@ async function handleDecline() {
           {{ error }}
         </BaseAlert>
 
-        <div class="flex flex-col lg:flex-row gap-6 items-start">
+        <div class="people-review-layout">
           <!-- Main column — the whole application reads as one document, not a
                grid of boxed fragments. Sections are separated by rules, not cards. -->
-          <div class="flex-1 min-w-0 w-full bg-white rounded-2xl border border-gray-200 p-6 sm:p-8">
+          <div class="application-document">
             <!-- Identity -->
-            <div class="flex items-start gap-4 pb-6 border-b border-gray-200">
+            <div class="application-document-identity">
               <div class="h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden shrink-0">
                 <img v-if="application.profile.photo_url" :src="application.profile.photo_url" :alt="application.profile.full_name" class="h-full w-full object-cover" />
                 <UserCircleIcon v-else class="h-12 w-12 text-gray-400" />
               </div>
               <div class="min-w-0">
-                <h1 class="text-xl font-bold text-gray-900 truncate">{{ application.profile.full_name }}</h1>
+                <h1 class="text-xl font-bold text-gray-900">{{ application.profile.full_name }}</h1>
                 <p class="text-gray-600 truncate">{{ application.email }}</p>
                 <p v-if="application.profile.phone" class="text-gray-500 text-sm truncate">{{ application.profile.phone }}</p>
               </div>
@@ -225,15 +225,15 @@ async function handleDecline() {
           </div>
 
           <!-- Sidebar — status, quick facts, actions -->
-          <div class="w-full lg:w-72 shrink-0 lg:sticky lg:top-6 space-y-4">
+          <div class="people-review-sidebar space-y-4">
             <div class="bg-white rounded-2xl border border-gray-200 p-5">
               <div class="flex items-center justify-between mb-3">
-                <p class="text-[11px] font-mono uppercase tracking-widest text-gray-400">// Status</p>
+                <p class="text-[11px] font-mono uppercase tracking-widest text-gray-400">Application status</p>
                 <span v-if="application.status === 'declined'" class="text-[11px] font-mono text-red-500">DECLINED</span>
                 <span v-else class="inline-flex items-center gap-1 text-[11px] font-mono" :class="application.email_verified ? 'text-senpai-700' : 'text-gray-400'">
                   <CheckCircleIcon v-if="application.email_verified" class="h-3.5 w-3.5" />
                   <EnvelopeIcon v-else class="h-3.5 w-3.5" />
-                  {{ application.email_verified ? 'CONFIRMED' : 'UNCONFIRMED' }}
+                  {{ application.email_verified ? 'Email verified' : 'Email unverified' }}
                 </span>
               </div>
 
@@ -255,7 +255,7 @@ async function handleDecline() {
                   <dd class="font-mono text-xs text-gray-500">{{ new Date(application.created_at).toLocaleDateString() }}</dd>
                 </div>
                 <div>
-                  <dt class="text-xs text-gray-400">How they heard about Senpai</dt>
+                  <dt class="text-xs text-gray-400">How they heard about SENPAI</dt>
                   <dd class="text-gray-900">{{ discoverySourceLabels[application.profile.discovery_source] }}</dd>
                 </div>
                 <div v-if="application.profile.is_og_member">
@@ -356,3 +356,22 @@ async function handleDecline() {
     </BaseModal>
   </AdminLayout>
 </template>
+
+<style scoped>
+.people-review-layout { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 24px; align-items: start; }
+.people-review-sidebar { position: sticky; top: 24px; min-width: 0; }
+.application-document { background: #fff; border: 1px solid #e3e9ef; border-radius: 11px; padding: 28px; min-width: 0; }
+.application-document-identity { display: flex; align-items: center; gap: 18px; padding-bottom: 26px; border-bottom: 1px solid #e9edf2; }
+.application-document-identity > .rounded-full { border-radius: 15px; width: 72px; height: 72px; }
+.application-document h1 { font-size: 25px; overflow-wrap: anywhere; }
+.application-document-identity p { font-size: 12px; line-height: 1.8; }
+.application-document h2 { text-transform: none; letter-spacing: 0; color: #455a71; font-size: 13px; margin-bottom: 12px; }
+.application-document .leading-relaxed { font-size: 13px; line-height: 1.85; color: #596e83; overflow-wrap: anywhere; }
+.people-review-sidebar .font-mono { font-family: inherit; letter-spacing: 0; }
+.people-review-sidebar .text-sm { font-size: 12px; }
+.people-review-sidebar dt { font-size: 10px; color: #6c7f91; margin-bottom: 4px; }
+.people-review-sidebar dd { font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+.people-review-sidebar :deep(button) { font-size: 12px; }
+@media (max-width: 1199px) { .people-review-layout { grid-template-columns: minmax(0, 1fr); } .people-review-sidebar { position: static; width: 100%; } }
+@media (max-width: 640px) { .application-document { padding: 22px 20px; } .application-document-identity { flex-wrap: wrap; gap: 14px; } .application-document h1 { font-size: 22px; } }
+</style>

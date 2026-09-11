@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PublicFormLayout from '@/components/layout/PublicFormLayout.vue'
 import { ref, computed, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useSkillsStore } from '@/stores/skills'
@@ -115,25 +116,7 @@ async function copyToken() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white shadow-sm">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex items-center justify-between">
-          <RouterLink to="/" class="flex items-center">
-            <img src="/senpai_logo.svg" alt="Senpai Collective" class="h-8 w-auto" />
-          </RouterLink>
-          <RouterLink
-            to="/login"
-            class="text-sm text-gray-600 hover:text-gray-900"
-          >
-            Member Login
-          </RouterLink>
-        </div>
-      </div>
-    </header>
-
-    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <PublicFormLayout eyebrow="Work with the collective" job-links>
       <!-- Success State -->
       <div v-if="submitted" class="text-center">
         <div class="bg-white rounded-lg shadow-sm p-8">
@@ -185,7 +168,7 @@ async function copyToken() {
           <BriefcaseIcon class="mx-auto h-12 w-12 text-gray-700" />
           <h1 class="mt-4 text-3xl font-bold text-gray-900">Post a Job</h1>
           <p class="mt-2 text-gray-600 max-w-2xl mx-auto">
-            Find talented creatives from the Senpai Collective community. Submit your job posting below and we'll match you with the right talent.
+            Find talented creatives from the SENPAI COLLECTIVE community. Submit your job posting below and we'll match you with the right talent.
           </p>
         </div>
 
@@ -296,6 +279,6 @@ async function copyToken() {
           </div>
         </form>
       </div>
-    </main>
-  </div>
+    
+  </PublicFormLayout>
 </template>

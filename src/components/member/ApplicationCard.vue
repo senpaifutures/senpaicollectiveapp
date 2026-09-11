@@ -16,10 +16,14 @@ import {
 interface Props {
   application: JobApplication
   showWithdraw?: boolean
+  withdrawing?: boolean
+  disabled?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  showWithdraw: true
+  showWithdraw: true,
+  withdrawing: false,
+  disabled: false
 })
 
 const emit = defineEmits<{
@@ -77,15 +81,15 @@ const formattedDate = computed(() => {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-    <div class="p-6">
-      <div class="flex items-start justify-between gap-4">
+  <div class="job-application-card">
+    <div class="job-application-content">
+      <div class="job-application-heading">
         <div class="flex-1 min-w-0">
           <!-- Job Title -->
           <RouterLink
             v-if="application.job"
             :to="`/jobs/${application.job_id}`"
-            class="text-lg font-semibold text-gray-900 hover:text-senpai-600 line-clamp-1"
+            class="application-title text-gray-900 hover:text-senpai-600"
           >
             {{ application.job.title }}
           </RouterLink>
@@ -120,14 +124,15 @@ const formattedDate = computed(() => {
       </div>
 
       <!-- Proposal Preview -->
-      <div class="mt-4 p-3 bg-gray-50 rounded-lg">
-        <p class="text-sm text-gray-600 line-clamp-2">
+      <details class="application-proposal">
+        <summary>Your proposal</summary>
+        <p class="text-sm text-gray-600 whitespace-pre-line">
           {{ application.proposal_text }}
         </p>
-      </div>
+      </details>
 
       <!-- Rate and Timeline -->
-      <div class="mt-4 flex items-center gap-4 text-sm text-gray-500">
+      <div class="application-terms mt-4 flex flex-wrap items-center gap-4 text-sm text-gray-500">
         <span v-if="application.proposed_rate">
           Rate: <span class="font-medium text-gray-700">{{ application.proposed_rate }}</span>
         </span>
@@ -151,6 +156,8 @@ const formattedDate = computed(() => {
         <BaseButton
           variant="outline"
           size="sm"
+          :loading="withdrawing"
+          :disabled="disabled"
           @click="emit('withdraw', application.id)"
         >
           Withdraw Application
@@ -159,3 +166,18 @@ const formattedDate = computed(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.job-application-card { background: #fff; border: 1px solid #e3e9ef; border-radius: 11px; overflow: hidden; }
+.job-application-content { padding: 24px; }
+.job-application-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+.application-title { font-size: 16px; font-weight: 650; line-height: 1.5; overflow-wrap: anywhere; }
+.job-application-heading .text-sm { font-size: 12px; line-height: 1.7; }
+.job-application-heading .rounded-full { border-radius: 5px; font-size: 10px; }
+.application-proposal { border-block: 1px solid #edf0f4; margin-top: 18px; padding-block: 14px; }
+.application-proposal summary { font-size: 12px; color: #546b80; cursor: pointer; font-weight: 550; }
+.application-proposal p { margin-top: 12px; font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; }
+.application-terms { font-size: 12px; }
+.job-application-card :deep(button) { font-size: 11px; border-radius: 6px; }
+@media (max-width: 560px) { .job-application-content { padding: 20px; } .job-application-heading { flex-wrap: wrap; gap: 12px; } .job-application-heading > .flex-1 { flex-basis: 100%; } }
+</style>

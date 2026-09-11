@@ -1,30 +1,81 @@
 <script setup lang="ts">
+import PublicDocumentLayout from '@/components/layout/PublicDocumentLayout.vue'
 import { RouterLink } from 'vue-router'
 
 const lastUpdated = 'August 2026'
+
+const sections = [
+  {
+    "id": "section-1",
+    "label": "1. Who we are"
+  },
+  {
+    "id": "section-2",
+    "label": "2. Applying & acceptance"
+  },
+  {
+    "id": "section-3",
+    "label": "3. Accurate information"
+  },
+  {
+    "id": "section-4",
+    "label": "4. What membership asks of you"
+  },
+  {
+    "id": "section-5",
+    "label": "5. Code of conduct"
+  },
+  {
+    "id": "section-6",
+    "label": "6. Your content & profile"
+  },
+  {
+    "id": "section-7",
+    "label": "7. Projects, ventures & intellectual property"
+  },
+  {
+    "id": "section-8",
+    "label": "8. Confidentiality"
+  },
+  {
+    "id": "section-9",
+    "label": "9. Representing the collective"
+  },
+  {
+    "id": "section-10",
+    "label": "10. Your record is yours"
+  },
+  {
+    "id": "section-11",
+    "label": "11. Ending membership"
+  },
+  {
+    "id": "section-12",
+    "label": "12. Membership is not employment"
+  },
+  {
+    "id": "section-13",
+    "label": "13. When there is a disagreement"
+  },
+  {
+    "id": "section-14",
+    "label": "14. Governing law"
+  },
+  {
+    "id": "section-15",
+    "label": "15. Changes to these terms"
+  },
+  {
+    "id": "section-16",
+    "label": "16. Contact"
+  }
+]
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-100">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <RouterLink to="/" class="flex items-center">
-          <img src="/senpai_logo.svg" alt="Senpai Collective" class="h-8 w-auto" />
-        </RouterLink>
-        <RouterLink to="/join" class="text-sm font-medium text-gray-700 hover:text-gray-900">
-          Apply &rarr;
-        </RouterLink>
-      </div>
-    </header>
-
-    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <p class="text-sm text-gray-500 uppercase tracking-wide mb-2">Senpai Collective</p>
-      <h1 class="text-3xl font-bold text-gray-900">Terms of Membership</h1>
-      <p class="mt-2 text-sm text-gray-500">Last updated: {{ lastUpdated }}</p>
-
-      <div class="prose prose-gray mt-8 max-w-none text-gray-700 leading-relaxed space-y-8">
-        <section>
+  <PublicDocumentLayout title="Terms of Membership" :last-updated="lastUpdated" :sections="sections">
+    <div class="prose prose-gray mt-8 max-w-none text-gray-700 leading-relaxed space-y-8">
+        <section id="section-1">
           <h2 class="text-xl font-semibold text-gray-900">1. Who we are</h2>
           <p>
             <strong>Senpai Collective</strong> is the community: the members, the pods, the
@@ -60,7 +111,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-2">
           <h2 class="text-xl font-semibold text-gray-900">2. Applying & acceptance</h2>
           <p>
             Membership is by application and is not guaranteed. We review every application
@@ -69,7 +120,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-3">
           <h2 class="text-xl font-semibold text-gray-900">3. Accurate information</h2>
           <p>
             You agree that the information you provide, including your name, location,
@@ -79,7 +130,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-4">
           <h2 class="text-xl font-semibold text-gray-900">4. What membership asks of you</h2>
           <p>
             Senpai is an active community, not a directory. Members are expected to
@@ -89,7 +140,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-5">
           <h2 class="text-xl font-semibold text-gray-900">5. Code of conduct</h2>
           <p>
             You agree to treat other members with respect and to refrain from harassment,
@@ -98,7 +149,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-6">
           <h2 class="text-xl font-semibold text-gray-900">6. Your content & profile</h2>
           <p>
             If accepted, your member profile, including your name, location, skills,
@@ -112,7 +163,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-7">
           <h2 class="text-xl font-semibold text-gray-900">7. Projects, ventures & intellectual property</h2>
           <p>
             Senpai works like a venture studio: we bring the platform, the team, the review
@@ -417,7 +468,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-8">
           <h2 class="text-xl font-semibold text-gray-900">8. Confidentiality</h2>
           <p>
             Being trusted with real information about the collective, its members, and the
@@ -458,7 +509,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-9">
           <h2 class="text-xl font-semibold text-gray-900">9. Representing the collective</h2>
           <p>
             The collective's reputation is the one asset no member could build alone, and it
@@ -524,7 +575,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-10">
           <h2 class="text-xl font-semibold text-gray-900">10. Your record is yours</h2>
           <p>
             Everything you do here builds a record: the roles you have verified and at what
@@ -576,7 +627,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-11">
           <h2 class="text-xl font-semibold text-gray-900">11. Ending membership</h2>
           <p>
             You may leave at any time by contacting us. <strong>Membership is a privilege, not
@@ -589,7 +640,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-12">
           <h2 class="text-xl font-semibold text-gray-900">12. Membership is not employment</h2>
           <p>
             Membership of the collective does not create an employment relationship, a
@@ -601,7 +652,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-13">
           <h2 class="text-xl font-semibold text-gray-900">13. When there is a disagreement</h2>
           <p>
             Most of what is worth arguing about here comes down to the same thing: what the
@@ -659,7 +710,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-14">
           <h2 class="text-xl font-semibold text-gray-900">14. Governing law</h2>
           <p>
             These terms are governed by the laws of the Federal Republic of Nigeria. Disputes
@@ -669,7 +720,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-15">
           <h2 class="text-xl font-semibold text-gray-900">15. Changes to these terms</h2>
           <p>
             We may update these terms as the community evolves. We'll make the current
@@ -677,7 +728,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-16">
           <h2 class="text-xl font-semibold text-gray-900">16. Contact</h2>
           <p>
             Questions about these terms? Reach us at
@@ -693,6 +744,5 @@ const lastUpdated = 'August 2026'
         <span class="mx-2 text-gray-300">·</span>
         <RouterLink to="/join" class="text-senpai-600 underline hover:text-senpai-700">Back to application</RouterLink>
       </div>
-    </main>
-  </div>
+  </PublicDocumentLayout>
 </template>

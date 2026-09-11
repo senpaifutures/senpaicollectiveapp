@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PublicFormLayout from '@/components/layout/PublicFormLayout.vue'
 import { ref, onMounted } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { jobsApi } from '@/api'
@@ -121,25 +122,7 @@ function formatDate(dateString: string): string {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white shadow-sm">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex items-center justify-between">
-          <RouterLink to="/" class="flex items-center">
-            <img src="/senpai_logo.svg" alt="Senpai Collective" class="h-8 w-auto" />
-          </RouterLink>
-          <RouterLink
-            to="/submit-job"
-            class="text-sm text-gray-600 hover:text-gray-900"
-          >
-            Submit a Job
-          </RouterLink>
-        </div>
-      </div>
-    </header>
-
-    <main class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <PublicFormLayout eyebrow="Your submission" job-links>
       <div class="text-center mb-8">
         <MagnifyingGlassIcon class="mx-auto h-12 w-12 text-gray-700" />
         <h1 class="mt-4 text-3xl font-bold text-gray-900">Check Job Status</h1>
@@ -237,6 +220,6 @@ function formatDate(dateString: string): string {
           Submit a new job posting &rarr;
         </RouterLink>
       </div>
-    </main>
-  </div>
+    
+  </PublicFormLayout>
 </template>

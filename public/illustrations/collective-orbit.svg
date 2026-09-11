@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Different minds, one collective</title>
+  <desc id="desc">Creative disciplines orbit a shared centre, connected by paths of collaboration.</desc>
+  <g stroke="#7da995" stroke-width="1.5"><ellipse cx="300" cy="150" rx="228" ry="98"/><ellipse cx="300" cy="150" rx="228" ry="67" transform="rotate(-23 300 150)"/><path d="m113 114 187 36 195-13M188 239l112-89 93-100M300 150l119 88" stroke-dasharray="5 7"/></g>
+  <g stroke="#162e25" stroke-width="2.5" stroke-linejoin="round">
+    <path d="m231 128 69-36 69 36-69 37z" fill="#f8fcf0"/>
+    <path d="m231 128 69 37v56l-69-37z" fill="#b5d896"/>
+    <path d="m300 165 69-37v56l-69 37z" fill="#41c0bf"/>
+    <path d="m270 128 30-16 30 16-30 16z" fill="#41c0bf"/>
+    <circle cx="113" cy="114" r="33" fill="#cdda8f"/>
+    <path d="m98 126 8-30 8 30m-14-9h12m8-15h8m-4 0v24" stroke-linecap="round"/>
+    <circle cx="188" cy="239" r="31" fill="#f9fbf2"/>
+    <path d="m178 229-11 10 11 10m20-20 11 10-11 10m-8-23-5 26" stroke-linecap="round"/>
+    <circle cx="393" cy="50" r="30" fill="#41c0bf"/>
+    <path d="m384 39 20 11-20 11z" fill="#f9fbf2"/>
+    <circle cx="495" cy="137" r="32" fill="#f9fbf2"/>
+    <path d="m480 149 7-21 18-9 8 8-18 18z" fill="#cdda8f"/><path d="m487 128 8 17m10-26-10 26"/>
+    <circle cx="419" cy="238" r="29" fill="#bbd9c7"/>
+    <path d="M407 244v-12m12 19v-26m12 19v-12" stroke-linecap="round" stroke-width="4"/>
+  </g>
+  <g fill="#cdda8f" stroke="#162e25" stroke-width="2"><circle cx="241" cy="54" r="6"/><circle cx="72" cy="184" r="5"/><circle cx="532" cy="211" r="5"/></g>
+</svg>

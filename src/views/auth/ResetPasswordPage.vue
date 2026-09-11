@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import AuthLayout from '@/components/layout/AuthLayout.vue'
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute, RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import BaseInput from '@/components/common/BaseInput.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import BaseAlert from '@/components/common/BaseAlert.vue'
-import { ArrowLeftIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
 const route = useRoute()
@@ -58,33 +58,8 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="relative min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gray-50">
-    <RouterLink
-      to="/login"
-      class="fixed top-4 left-4 sm:top-6 sm:left-6 inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition-colors z-10"
-    >
-      <ArrowLeftIcon class="h-4 w-4" />
-      Back
-    </RouterLink>
-    <RouterLink
-      to="/"
-      aria-label="Close"
-      class="fixed top-4 right-4 sm:top-6 sm:right-6 text-gray-300 hover:text-gray-500 transition-colors z-10"
-    >
-      <XMarkIcon class="h-6 w-6" />
-    </RouterLink>
-
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
-      <RouterLink to="/" class="flex justify-center">
-        <img src="/senpai_logo.svg" alt="Senpai" class="h-12 w-auto" />
-      </RouterLink>
-      <h2 class="mt-6 text-center text-2xl font-bold text-gray-900">
-        Set new password
-      </h2>
-    </div>
-
-    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-      <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+  <AuthLayout title="Set new password" eyebrow="Account recovery">
+    <template #intro><RouterLink to="/login">Back to sign in</RouterLink></template>
         <!-- Success State -->
         <div v-if="success" class="text-center">
           <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
@@ -98,7 +73,7 @@ async function handleSubmit() {
           </p>
           <RouterLink
             to="/login"
-            class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-senpai-600 hover:bg-senpai-700"
+            class="auth-primary"
           >
             Sign in
           </RouterLink>
@@ -115,6 +90,8 @@ async function handleSubmit() {
               v-model="form.password"
               type="password"
               label="New Password"
+              name="new-password"
+              autocomplete="new-password"
               placeholder="Min 8 characters"
               :error="errors.password"
               required
@@ -124,6 +101,8 @@ async function handleSubmit() {
               v-model="form.password_confirm"
               type="password"
               label="Confirm New Password"
+              name="confirm-password"
+              autocomplete="new-password"
               placeholder="Confirm your password"
               :error="errors.password_confirm"
               required
@@ -139,7 +118,5 @@ async function handleSubmit() {
             </BaseButton>
           </form>
         </div>
-      </div>
-    </div>
-  </div>
+  </AuthLayout>
 </template>

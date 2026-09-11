@@ -1,256 +1,152 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import type { Component } from 'vue'
+import { ArrowDownIcon, ArrowUpRightIcon, UsersIcon, CpuChipIcon, BuildingOffice2Icon, PaintBrushIcon, SquaresPlusIcon } from '@heroicons/vue/24/outline'
 import { SENPAI_MANIFESTO } from '@/content/manifesto'
-import { vReveal } from '@/composables/useScrollReveal'
+import PublicLayout from '@/components/layout/PublicLayout.vue'
+
+const pillarIcons: Record<string, Component> = {
+  Culture: UsersIcon,
+  Technology: CpuChipIcon,
+  Business: BuildingOffice2Icon,
+  Art: PaintBrushIcon,
+  Systems: SquaresPlusIcon,
+}
+
+const chapters = [
+  { id: 'the-world', label: 'The world as it is' },
+  { id: 'beliefs', label: 'What we believe' },
+  { id: 'change', label: 'How we change this' },
+  { id: 'rejections', label: 'What we reject' },
+  { id: 'commitments', label: 'Our commitment' },
+  { id: 'values', label: 'Core values' },
+  { id: 'pillars', label: 'What we’re building' },
+  { id: 'creed', label: 'The pledge' },
+]
 </script>
 
 <template>
-  <div class="min-h-screen bg-white">
-    <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16 items-center">
-          <RouterLink to="/" class="flex items-center">
-            <img src="/senpai_logo.svg" alt="Senpai Collective" class="h-8 w-auto" />
-          </RouterLink>
-          <div class="flex items-center gap-4">
-            <RouterLink
-              to="/"
-              class="hidden sm:block text-sm font-medium text-gray-700 hover:text-gray-900"
-            >
-              Home
-            </RouterLink>
-            <RouterLink
-              to="/join"
-              class="inline-flex items-center px-4 py-2 rounded-lg bg-gray-900 text-white text-sm font-medium hover:bg-gray-800 transition active:scale-[0.97]"
-            >
-              Apply to Join
-            </RouterLink>
-          </div>
+  <PublicLayout>
+    <article class="manifesto">
+      <header class="manifesto-hero manifesto-shell">
+        <div class="manifesto-meta"><p class="chapter-label">Our manifesto</p><span>Est. {{ SENPAI_MANIFESTO.founding.established }} · A shared conviction</span></div>
+        <h1>{{ SENPAI_MANIFESTO.declarationHeadline }}</h1>
+        <div class="manifesto-opening">
+          <div class="manifesto-emblem"><img src="/illustrations/collective-orbit.svg" width="600" height="300" alt="Different disciplines connected through a shared foundation" /><p>A declaration of who we are,<br />what we believe, and why we build.</p><a href="#the-world">Read the manifesto <ArrowDownIcon /></a></div>
+          <p class="manifesto-prose">{{ SENPAI_MANIFESTO.declarationBody }}</p>
         </div>
-      </div>
-    </nav>
+      </header>
 
-    <!-- Bounded reading column — the sections below have full-bleed color
-         backgrounds; capping the page here (rather than at the viewport)
-         keeps those from turning into wide empty gutters on large screens. -->
-    <div class="max-w-5xl mx-auto lg:border-x lg:border-gray-100">
+      <nav class="chapter-index manifesto-shell" aria-label="Manifesto chapters"><a v-for="(chapter, index) in chapters" :key="chapter.id" :href="`#${chapter.id}`"><span>0{{ index + 1 }}</span>{{ chapter.label }}</a></nav>
 
-    <!-- Hero -->
-    <section class="relative pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-gray-900 overflow-hidden">
-      <div
-        class="absolute -top-32 left-1/2 -translate-x-1/2 w-[560px] h-[560px] rounded-full bg-senpai-500/20 blur-[100px] pointer-events-none"
-        aria-hidden="true"
-      />
-      <div class="relative max-w-3xl mx-auto text-center">
-        <p v-reveal.now class="text-senpai-400 font-medium tracking-wide uppercase mb-6">The Senpai Collective</p>
-        <h1 v-reveal.now="80" class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-8">
-          Manifesto
-        </h1>
-        <p v-reveal.now="160" class="text-xl text-gray-400 italic">
-          "A declaration of who we are, what we believe, and why we build."
-        </p>
-      </div>
-    </section>
+      <section id="the-world" class="manifesto-chapter manifesto-shell chapter-split">
+        <header><p class="chapter-label">01 / The world as it is</p><h2>We do not accept<br /><em>this as inevitable.</em></h2></header>
+        <div class="manifesto-prose"><p v-for="(paragraph, index) in SENPAI_MANIFESTO.worldAsItIs.split('\n\n')" :key="index" :class="{ 'world-conclusion': index === SENPAI_MANIFESTO.worldAsItIs.split('\n\n').length - 1 }">{{ paragraph }}</p></div>
+      </section>
 
-    <!-- The Manifesto Content -->
-    <article class="py-20 px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl mx-auto">
+      <section id="beliefs" class="beliefs-section">
+        <div class="manifesto-shell manifesto-chapter"><div class="chapter-heading"><p class="chapter-label">02 / What we believe</p><h2>Conviction comes<br /><em>before construction.</em></h2></div>
+          <ol class="beliefs-list"><li v-for="(belief, index) in SENPAI_MANIFESTO.beliefs" :key="index"><span class="belief-number">0{{ index + 1 }}</span><p><strong>We believe</strong> {{ belief }}</p></li></ol>
+        </div>
+      </section>
 
-        <!-- Opening Declaration -->
-        <section class="mb-20">
-          <p v-reveal class="text-2xl sm:text-3xl font-bold text-gray-900 leading-relaxed mb-8">
-            {{ SENPAI_MANIFESTO.declarationHeadline }}
-          </p>
-          <p v-reveal="80" class="text-lg text-gray-700 leading-relaxed whitespace-pre-line">{{ SENPAI_MANIFESTO.declarationBody }}</p>
-        </section>
+      <section id="change" class="manifesto-chapter manifesto-shell chapter-split">
+        <header><p class="chapter-label">03 / How we change this</p><h2>Individual talent.<br /><em>Collective power.</em></h2><img class="chapter-illustration" src="/illustrations/shared-foundation.svg" width="600" height="300" alt="Contributions building a shared foundation" /></header>
+        <ol class="change-list"><li v-for="(line, index) in SENPAI_MANIFESTO.howWeChange" :key="index"><span>0{{ index + 1 }}</span><p>{{ line }}</p></li></ol>
+      </section>
 
-        <!-- The World As It Is -->
-        <section class="mb-20">
-          <h2 v-reveal class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">The World As It Is</h2>
-          <p v-reveal="80" class="text-lg text-gray-700 leading-relaxed whitespace-pre-line">{{ SENPAI_MANIFESTO.worldAsItIs }}</p>
-        </section>
+      <section id="rejections" class="rejections-section"><div class="manifesto-shell manifesto-chapter chapter-split"><header><p class="chapter-label">04 / What we reject</p><h2>Some things<br /><em>end with us.</em></h2></header><div class="rejections-list"><p v-for="(rejection, index) in SENPAI_MANIFESTO.rejections" :key="index"><strong>We reject</strong> {{ rejection }}</p></div></div></section>
 
-        <!-- What We Believe -->
-        <section class="mb-20">
-          <h2 v-reveal class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">What We Believe</h2>
-          <div class="space-y-6">
-            <p
-              v-for="(belief, index) in SENPAI_MANIFESTO.beliefs"
-              :key="index"
-              v-reveal="index * 60"
-              class="text-lg text-gray-900 leading-relaxed"
-            >
-              <span class="font-bold">We believe</span> {{ belief }}
-            </p>
-          </div>
-        </section>
+      <section id="commitments" class="manifesto-chapter manifesto-shell">
+        <div class="chapter-heading"><div><p class="chapter-label">05 / Our commitment</p><h2>You won’t build<br /><em>alone.</em></h2></div><p>To every member who joins this collective, we make these promises:</p></div>
+        <div class="commitments-grid"><div v-for="(commitment, index) in SENPAI_MANIFESTO.commitments" :key="commitment.title"><span class="chapter-label">0{{ index + 1 }}</span><h3>{{ commitment.title }}</h3><p>{{ commitment.description }}</p></div></div>
+      </section>
 
-        <!-- How We Change This -->
-        <section class="mb-20">
-          <h2 v-reveal class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">How We Change This</h2>
-          <div class="space-y-6">
-            <p
-              v-for="(line, index) in SENPAI_MANIFESTO.howWeChange"
-              :key="index"
-              v-reveal="index * 60"
-              class="text-lg text-gray-900 leading-relaxed"
-            >
-              {{ line }}
-            </p>
-          </div>
-        </section>
+      <section id="values" class="values-section"><div class="manifesto-shell manifesto-chapter">
+        <div class="chapter-heading"><div><p class="chapter-label">06 / Core values</p><h2>How we live.<br /><em>How we build.</em></h2></div><div class="values-intro"><img src="/corevalues.svg" width="64" height="64" alt="" /><p>These are not aspirations. These are how we live:</p></div></div>
+        <div class="values-grid"><div v-for="(value, index) in SENPAI_MANIFESTO.values" :key="value.name"><span class="chapter-label">0{{ index + 1 }}</span><h3>{{ value.name }}</h3><p>{{ value.description }}</p></div></div>
+      </div></section>
 
-        <!-- What We Reject -->
-        <section v-reveal class="mb-20 bg-gray-100 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-12">
-          <div class="max-w-3xl mx-auto">
-            <h2 class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">What We Reject</h2>
-            <div class="space-y-4 text-lg text-gray-800">
-              <p v-for="(rejection, index) in SENPAI_MANIFESTO.rejections" :key="index">
-                <span class="font-bold text-gray-900">We reject</span> {{ rejection }}
-              </p>
-            </div>
-          </div>
-        </section>
+      <section id="pillars" class="manifesto-chapter manifesto-shell">
+        <div class="chapter-heading"><div><p class="chapter-label">07 / What we’re building</p><h2>Five pillars.<br /><em>A continent of possibility.</em></h2></div><p>The SENPAI COLLECTIVE builds across five pillars. Not because we chose them arbitrarily, but because these are the domains that shape civilizations:</p></div>
+        <div class="pillars-list"><div v-for="(pillar, index) in SENPAI_MANIFESTO.pillars" :key="pillar.name"><span class="chapter-label">0{{ index + 1 }}</span><h3><span class="pillar-icon" aria-hidden="true"><component :is="pillarIcons[pillar.name]" /></span>{{ pillar.name }}</h3><p>{{ pillar.description }}</p></div></div>
+      </section>
 
-        <!-- Our Commitment -->
-        <section class="mb-20">
-          <h2 v-reveal class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">Our Commitment</h2>
-          <p v-reveal="60" class="text-lg text-gray-700 leading-relaxed mb-8">
-            To every member who joins this collective, we make these promises:
-          </p>
-          <div class="space-y-8">
-            <div v-for="(commitment, index) in SENPAI_MANIFESTO.commitments" :key="commitment.title" v-reveal="index * 60">
-              <h3 class="text-xl font-bold text-gray-900 mb-2">{{ commitment.title }}</h3>
-              <p class="text-gray-700">{{ commitment.description }}</p>
-            </div>
-          </div>
-        </section>
+      <section id="creed" class="pledge-section"><div class="manifesto-shell manifesto-chapter"><p class="chapter-label">08 / The pledge</p><img src="/senpai_logo.svg" width="64" height="64" alt="SENPAI COLLECTIVE" /><div class="pledge-lines"><p v-for="(line, index) in SENPAI_MANIFESTO.creed" :key="index" :class="{ 'pledge-final': index >= SENPAI_MANIFESTO.creed.length - 2 }">{{ line }}</p></div></div></section>
 
-        <!-- Core Values -->
-        <section class="mb-20">
-          <img v-reveal src="/corevalues.svg" alt="" class="h-16 w-16 mb-6" />
-          <h2 v-reveal="40" class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">Core Values</h2>
-          <p v-reveal="100" class="text-lg text-gray-700 leading-relaxed mb-8">
-            These are not aspirations. These are how we live:
-          </p>
-          <div class="space-y-8">
-            <div
-              v-for="(value, index) in SENPAI_MANIFESTO.values"
-              :key="value.name"
-              v-reveal="index * 60"
-              class="border-l-4 border-gray-900 pl-6"
-            >
-              <h3 class="text-xl font-bold text-gray-900 mb-2">{{ value.name }}</h3>
-              <p class="text-gray-700">{{ value.description }}</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- What We're Building -->
-        <section class="mb-20">
-          <h2 v-reveal class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">What We're Building</h2>
-          <p v-reveal="60" class="text-lg text-gray-700 leading-relaxed mb-8">
-            The Senpai Collective builds across five pillars. Not because we chose them arbitrarily, but because these are the domains that shape civilizations:
-          </p>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div
-              v-for="(pillar, index) in SENPAI_MANIFESTO.pillars"
-              :key="pillar.name"
-              v-reveal="index * 60"
-              class="bg-gray-50 rounded-xl p-6"
-              :class="{ 'sm:col-span-2': pillar.name === 'Systems' }"
-            >
-              <span class="text-2xl mb-3 block">{{ pillar.emoji }}</span>
-              <h3 class="font-bold text-gray-900 mb-2">{{ pillar.name }}</h3>
-              <p class="text-sm text-gray-600">{{ pillar.description }}</p>
-            </div>
-          </div>
-        </section>
-
-      </div>
+      <section class="manifesto-chapter manifesto-shell chapter-split invitation">
+        <header><p class="chapter-label">The invitation</p><h2>If that’s you —<br /><em>we’re ready<br />when you are.</em></h2></header>
+        <div class="manifesto-prose"><p>This manifesto is not a marketing document. It is a declaration of war — against mediocrity, against isolation, against the systems that have failed our people.</p><p>If you read this and felt something stir — that's the signal. That restlessness, that recognition, that sense of "finally, someone said it" — that's how you know you might belong here.</p><p>We are not looking for spectators. We are looking for builders. People who will show up, do the work, challenge themselves, and lift others as they climb.</p><RouterLink to="/join" class="public-button">Apply to join the collective <ArrowUpRightIcon /></RouterLink><p class="manifesto-signature">Est. {{ SENPAI_MANIFESTO.founding.established }}. Reaffirmed {{ new Date().getFullYear() }}.</p></div>
+      </section>
     </article>
-
-    <!-- The Pledge Section -->
-    <section id="creed" class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-900">
-      <div class="max-w-3xl mx-auto">
-        <h2 v-reveal class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-8 text-center">The Pledge</h2>
-
-        <div class="text-center space-y-6">
-          <p
-            v-for="(line, index) in SENPAI_MANIFESTO.creed"
-            :key="index"
-            v-reveal="index * 50"
-            :class="{
-              'text-2xl sm:text-3xl font-bold text-white': index >= SENPAI_MANIFESTO.creed.length - 2,
-              'text-xl text-gray-300': index < SENPAI_MANIFESTO.creed.length - 2
-            }"
-          >
-            {{ line }}
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Closing -->
-    <section class="py-20 px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl mx-auto">
-        <h2 v-reveal class="text-sm font-bold text-gray-400 uppercase tracking-wider mb-6">The Invitation</h2>
-
-        <p v-reveal="60" class="text-lg text-gray-700 leading-relaxed mb-6">
-          This manifesto is not a marketing document. It is a declaration of war — against mediocrity, against isolation, against the systems that have failed our people.
-        </p>
-
-        <p v-reveal="120" class="text-lg text-gray-700 leading-relaxed mb-6">
-          If you read this and felt something stir — that's the signal. That restlessness, that recognition, that sense of "finally, someone said it" — that's how you know you might belong here.
-        </p>
-
-        <p v-reveal="180" class="text-lg text-gray-700 leading-relaxed mb-8">
-          We are not looking for spectators. We are looking for builders. People who will show up, do the work, challenge themselves, and lift others as they climb.
-        </p>
-
-        <p v-reveal="240" class="text-xl font-bold text-gray-900 mb-8">
-          If that's you — we're ready when you are.
-        </p>
-
-        <RouterLink
-          v-reveal="300"
-          to="/join"
-          class="inline-flex items-center justify-center px-8 py-4 rounded-lg bg-gray-900 text-white text-lg font-medium hover:bg-gray-800 transition active:scale-[0.97]"
-        >
-          Apply to Join the Collective
-        </RouterLink>
-      </div>
-    </section>
-
-    <!-- Signature -->
-    <section class="py-12 px-4 sm:px-6 lg:px-8 border-t border-gray-200">
-      <div class="max-w-3xl mx-auto">
-        <p class="text-gray-400 text-sm">
-          Est. {{ SENPAI_MANIFESTO.founding.established }}. Reaffirmed {{ new Date().getFullYear() }}.
-        </p>
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 py-8 border-t border-gray-800">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row justify-between items-center">
-          <p class="text-sm text-center md:text-left mb-4 md:mb-0">
-            Operated by SENPAI FUTURES LTD (RC 9746107). &copy; {{ new Date().getFullYear() }}
-          </p>
-          <div class="flex items-center">
-            <a href="https://senpaifutures.com/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <span class="grid place-items-center w-9 h-9 bg-white shrink-0">
-                <img src="/senpai.svg" alt="Senpai" class="h-5 w-auto" />
-              </span>
-              <span class="text-sm text-gray-400">senpaifutures.com</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </footer>
-
-    </div>
-  </div>
+  </PublicLayout>
 </template>
+
+<style scoped>
+.manifesto-shell { width: min(1160px, calc(100% - 80px)); margin-inline: auto; }
+.manifesto-hero { padding-block: 52px 70px; }
+.manifesto-meta { display: flex; justify-content: space-between; gap: 24px; align-items: center; }
+.chapter-label { font-size: 11px; font-weight: 600; line-height: 1.7; letter-spacing: 1.6px; text-transform: uppercase; color: #56735d; }
+.manifesto-meta > span { font-size: 12px; color: #7b8679; }
+.manifesto h1 { font-size: clamp(58px, 8vw, 110px); line-height: .99; letter-spacing: -.06em; font-weight: 500; max-width: 1120px; margin-block: 42px 60px; text-wrap: balance; }
+.manifesto-opening { display: grid; grid-template-columns: .85fr 1.15fr; gap: 90px; align-items: start; }
+.manifesto-emblem img { width: 100%; height: auto; max-width: 360px; }
+.manifesto-emblem > p { font-size: 14px; line-height: 1.7; color: #6c7a6c; margin-top: 16px; }
+.manifesto-emblem a { display: inline-flex; align-items: center; gap: 20px; font-size: 13px; color: #256c53; padding-block: 16px; margin-top: 8px; }
+.manifesto-emblem svg { width: 18px; height: 18px; }
+.manifesto-prose { white-space: pre-line; font-size: 17px; line-height: 1.85; color: #536356; }
+.manifesto-prose > p + p { margin-top: 24px; }
+.chapter-index { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid #cbd8c8; padding-block: 20px; gap: 12px 28px; }
+.chapter-index a { display: flex; gap: 12px; align-items: baseline; padding-block: 8px; font-size: 12px; color: #4f6656; }
+.chapter-index a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.chapter-index span { color: #889481; font-size: 10px; }
+.manifesto-chapter { padding-block: 88px; scroll-margin-top: 24px; }
+.chapter-split { display: grid; grid-template-columns: .85fr 1.15fr; gap: 90px; }
+.manifesto h2 { font-size: clamp(34px, 4vw, 49px); line-height: 1.12; letter-spacing: -1.9px; font-weight: 500; margin-top: 24px; }
+.manifesto em { font-family: Georgia, 'Times New Roman', serif; font-weight: 400; color: #2e7b64; }
+.manifesto .world-conclusion { border-left: 2px solid #36866c; padding-left: 24px; color: #244c36; font-size: 22px; line-height: 1.6; margin-top: 36px; }
+.beliefs-section { background: #e7f0e1; }
+.chapter-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 60px; margin-bottom: 42px; }
+.chapter-heading > p, .values-intro { max-width: 360px; font-size: 15px; line-height: 1.8; color: #63745e; }
+.beliefs-section .chapter-heading { display: block; }
+.beliefs-list { padding: 0; list-style: none; }
+.beliefs-list li { display: grid; grid-template-columns: 64px 1fr; gap: 24px; border-top: 1px solid #c6d7bf; padding-block: 28px; }
+.belief-number { color: #7e9a70; font-size: 13px; padding-top: 7px; }
+.beliefs-list p { font-size: clamp(22px, 2.6vw, 30px); line-height: 1.5; letter-spacing: -.6px; max-width: 960px; color: #41583a; }
+.beliefs-list strong { color: #233f28; font-weight: 600; }
+.chapter-illustration { display: block; width: 100%; height: auto; margin-top: 40px; }
+.change-list { padding: 0; list-style: none; }
+.change-list li { display: flex; gap: 24px; padding-block: 24px; border-top: 1px solid #d5dfd4; font-size: 17px; line-height: 1.85; color: #536356; }
+.change-list li:first-child { padding-top: 0; border: 0; }
+.change-list span { font-size: 11px; padding-top: 6px; color: #698e61; }
+.rejections-section { background: #f7f3ea; border-block: 1px solid #d8decd; }
+.rejections-list p { font-size: 18px; line-height: 1.7; padding-block: 15px; border-bottom: 1px solid #d5dccd; color: #596450; }
+.rejections-list p:first-child { padding-top: 0; }
+.rejections-list strong { color: #36472c; font-weight: 600; }
+.commitments-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 64px; row-gap: 40px; }
+.commitments-grid > div { border-top: 1px solid #cbd8c8; padding-top: 24px; }
+.manifesto h3 { font-size: 25px; letter-spacing: -.7px; line-height: 1.35; font-weight: 500; margin-block: 16px; }
+.commitments-grid p, .values-grid p { font-size: 15px; line-height: 1.85; color: #586b59; }
+.values-section { background: #fafaf8; }
+.values-intro img { margin-bottom: 18px; width: 56px; height: 56px; }
+.values-grid { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 36px; row-gap: 40px; }
+.values-grid > div { border-top: 1px solid #ccd9c3; padding-top: 24px; }
+.values-grid h3 { font-size: 23px; }
+.pillars-list > div { display: grid; grid-template-columns: 40px .8fr 1.2fr; align-items: baseline; gap: 24px; border-top: 1px solid #cbd8c8; padding-block: 22px; }
+.pillars-list h3 { display: flex; align-items: center; gap: 18px; margin: 0; font-size: 32px; }
+.pillar-icon { display: grid; place-items: center; width: 44px; height: 44px; flex: 0 0 44px; border: 1px solid #cadbc3; background: #edf3e7; color: #397458; border-radius: 3px; }
+.pillar-icon svg { width: 24px; height: 24px; stroke-width: 1.5; }
+.pillars-list p { font-size: 15px; line-height: 1.8; color: #5e705e; }
+.pledge-section { background: #242828; text-align: center; }
+.pledge-section .chapter-label { color: #b0c7a5; }
+.pledge-section img { width: 64px; height: 64px; margin: 32px auto 40px; }
+.pledge-lines { max-width: 760px; margin: auto; }
+.pledge-lines p { font-size: 22px; line-height: 1.7; color: #c6d5c0; margin-bottom: 24px; }
+.pledge-lines .pledge-final { color: #dfefc9; font-family: Georgia, 'Times New Roman', serif; font-size: 46px; letter-spacing: -1px; line-height: 1.2; margin: 40px 0 0; }
+.pledge-lines .pledge-final:last-child { margin-top: 12px; }
+.invitation .public-button { margin-top: 32px; white-space: normal; }
+.invitation svg { width: 20px; height: 20px; flex-shrink: 0; }
+.manifesto-prose .manifesto-signature { font-size: 12px; color: #788573; margin-top: 32px; }
+@media (max-width: 900px) { .manifesto-opening, .chapter-split { gap: 40px; grid-template-columns: .8fr 1.2fr; } .values-grid { grid-template-columns: 1fr 1fr; } .chapter-heading { gap: 36px; } .chapter-index { grid-template-columns: repeat(2, 1fr); } .manifesto-shell { width: calc(100% - 48px); } }
+@media (max-width: 640px) { .manifesto-shell { width: calc(100% - 40px); } .manifesto-hero { padding-block: 30px 40px; } .manifesto-meta { align-items: flex-start; } .manifesto-meta > span { font-size: 10px; text-align: right; } .manifesto h1 { font-size: clamp(46px, 11vw, 68px); margin-block: 32px; letter-spacing: -.055em; } .manifesto-opening, .chapter-split { grid-template-columns: 1fr; gap: 30px; } .manifesto-emblem { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; align-items: center; } .manifesto-emblem img { grid-row: span 2; } .manifesto-emblem > p { font-size: 12px; margin: 0; } .manifesto-emblem a { font-size: 11px; gap: 8px; padding: 0; margin: 0; } .manifesto-prose { font-size: 16px; } .chapter-index { gap: 4px 16px; } .chapter-index a { font-size: 11px; gap: 8px; } .manifesto-chapter { padding-block: 54px; } .manifesto h2 { font-size: 38px; letter-spacing: -1.5px; margin-top: 16px; } .chapter-heading { flex-direction: column; align-items: flex-start; gap: 24px; } .chapter-heading > p, .values-intro { max-width: none; } .beliefs-list li { grid-template-columns: 22px 1fr; gap: 12px; padding-block: 22px; } .beliefs-list p { font-size: 21px; } .change-list li { font-size: 16px; gap: 16px; } .chapter-illustration { max-width: 350px; margin-top: 24px; } .commitments-grid, .values-grid { grid-template-columns: 1fr; gap: 30px; } .values-intro { display: flex; align-items: center; gap: 20px; } .values-intro img { margin: 0; } .pillars-list > div { grid-template-columns: 22px 1fr; gap: 10px 14px; } .pillars-list p { grid-column: 2; } .pillars-list h3 { font-size: 28px; } .pledge-lines p { font-size: 18px; } .pledge-lines .pledge-final { font-size: 34px; } }
+</style>

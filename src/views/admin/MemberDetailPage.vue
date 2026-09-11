@@ -304,7 +304,7 @@ function lastActive(iso?: string | null) {
 
 <template>
   <AdminLayout back-to="/admin/members" back-label="Back to Members">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="people-review-page max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Loading -->
       <div v-if="loading" class="flex justify-center py-12">
         <LoadingSpinner size="lg" />
@@ -327,11 +327,11 @@ function lastActive(iso?: string | null) {
           {{ error }}
         </BaseAlert>
 
-        <div class="flex flex-col lg:flex-row gap-6 items-start">
+        <div class="people-review-layout">
           <!-- Main column -->
           <div class="flex-1 min-w-0 w-full space-y-6">
             <!-- The real profile — same component used in the directory and own-profile view -->
-            <div class="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8">
+            <div class="admin-member-profile">
               <ProfileDisplay
                 :full-name="adminStore.currentMember.member.profile?.full_name"
                 :photo-url="adminStore.currentMember.member.profile?.photo_url"
@@ -357,7 +357,7 @@ function lastActive(iso?: string | null) {
 
             <!-- Activity — what this member has actually done on the platform -->
             <div class="bg-white rounded-2xl border border-gray-200 p-6">
-              <p class="text-[11px] font-mono uppercase tracking-widest text-gray-400 mb-3">// Activity</p>
+              <p class="text-[11px] font-mono uppercase tracking-widest text-gray-400 mb-3">Recent activity</p>
               <ActivityFeed :activities="activity" empty-text="No recorded activity yet." />
             </div>
 
@@ -386,7 +386,7 @@ function lastActive(iso?: string | null) {
           </div>
 
           <!-- Sidebar — status, quick facts, actions. Sticky so actions never require scrolling to find. -->
-          <div class="w-full lg:w-72 shrink-0 lg:sticky lg:top-6 space-y-4">
+          <div class="people-review-sidebar space-y-4">
             <div class="bg-white rounded-2xl border border-gray-200 p-5">
               <div class="flex items-center justify-between mb-3">
                 <p class="text-[11px] font-mono uppercase tracking-widest text-gray-400">// Status</p>
@@ -534,3 +534,22 @@ function lastActive(iso?: string | null) {
     </BaseModal>
   </AdminLayout>
 </template>
+
+<style scoped>
+.people-review-layout { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 24px; align-items: start; }
+.people-review-sidebar { position: sticky; top: 24px; min-width: 0; }
+.application-document { background: #fff; border: 1px solid #e3e9ef; border-radius: 11px; padding: 28px; min-width: 0; }
+.application-document-identity { display: flex; align-items: center; gap: 18px; padding-bottom: 26px; border-bottom: 1px solid #e9edf2; }
+.application-document-identity > .rounded-full { border-radius: 15px; width: 72px; height: 72px; }
+.application-document h1 { font-size: 25px; overflow-wrap: anywhere; }
+.application-document-identity p { font-size: 12px; line-height: 1.8; }
+.application-document h2 { text-transform: none; letter-spacing: 0; color: #455a71; font-size: 13px; margin-bottom: 12px; }
+.application-document .leading-relaxed { font-size: 13px; line-height: 1.85; color: #596e83; overflow-wrap: anywhere; }
+.people-review-sidebar .font-mono { font-family: inherit; letter-spacing: 0; }
+.people-review-sidebar .text-sm { font-size: 12px; }
+.people-review-sidebar dt { font-size: 10px; color: #6c7f91; margin-bottom: 4px; }
+.people-review-sidebar dd { font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+.people-review-sidebar :deep(button) { font-size: 12px; }
+@media (max-width: 1199px) { .people-review-layout { grid-template-columns: minmax(0, 1fr); } .people-review-sidebar { position: static; width: 100%; } }
+@media (max-width: 640px) { .application-document { padding: 22px 20px; } .application-document-identity { flex-wrap: wrap; gap: 14px; } .application-document h1 { font-size: 22px; } }
+</style>

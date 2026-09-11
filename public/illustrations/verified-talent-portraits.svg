@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 384" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Three illustrative member portraits</title>
+  <desc id="desc">Fictional figures representing a product designer, a software engineer and a brand designer, each drawn in the collective's illustration style.</desc>
+
+  <!-- Three 512x384 panels. The component shows one panel per card by sliding
+       this sheet sideways, so each panel must read on its own. -->
+
+  <!-- Panel 1 — product designer -->
+  <g transform="translate(0,0)">
+    <rect width="512" height="384" fill="#f8fcf0"/>
+    <g stroke="#7da995" stroke-width="2" stroke-dasharray="5 7">
+      <circle cx="256" cy="188" r="148"/>
+      <path d="M40 330h432"/>
+    </g>
+    <g stroke="#162e25" stroke-width="3" stroke-linejoin="round">
+      <!-- connected nodes: the shape of a system, not a screen -->
+      <path d="m96 84 54 44-78 22z" stroke-width="2.5" fill="none"/>
+      <circle cx="96" cy="84" r="15" fill="#41c0bf"/>
+      <circle cx="150" cy="128" r="13" fill="#cdda8f"/>
+      <circle cx="72" cy="150" r="11" fill="#b5d896"/>
+      <rect x="366" y="240" width="70" height="54" fill="#cdda8f"/>
+      <path d="M366 258h70M366 276h70" stroke-width="2.5"/>
+      <!-- figure -->
+      <path d="M146 384c0-70 49-112 110-112s110 42 110 112z" fill="#b5d896"/>
+      <path d="M256 272v112" stroke-width="2.5"/>
+      <rect x="238" y="218" width="36" height="56" rx="10" fill="#f9fbf2"/>
+      <circle cx="256" cy="168" r="62" fill="#f9fbf2"/>
+      <path d="M196 158a60 60 0 0 1 120 0 74 74 0 0 0-120 0z" fill="#162e25"/>
+      <g fill="#162e25" stroke="none"><circle cx="235" cy="180" r="5"/><circle cx="277" cy="180" r="5"/></g>
+      <path d="M239 200a21 15 0 0 0 34 0" stroke-linecap="round" fill="none"/>
+    </g>
+    <g fill="#cdda8f" stroke="#162e25" stroke-width="2"><circle cx="418" cy="92" r="7"/><circle cx="76" cy="212" r="5"/></g>
+  </g>
+
+  <!-- Panel 2 — software engineer -->
+  <g transform="translate(512,0)">
+    <rect width="512" height="384" fill="#eef5ec"/>
+    <g stroke="#7da995" stroke-width="2" stroke-dasharray="5 7">
+      <circle cx="256" cy="188" r="148"/>
+      <path d="M40 330h432"/>
+    </g>
+    <g stroke="#162e25" stroke-width="3" stroke-linejoin="round">
+      <!-- angle brackets: code, without resorting to a laptop cliche -->
+      <path d="m112 84-34 30 34 30" stroke-linecap="round" fill="none" stroke-width="5"/>
+      <path d="m400 240 34 30-34 30" stroke-linecap="round" fill="none" stroke-width="5"/>
+      <!-- figure -->
+      <path d="M146 384c0-70 49-112 110-112s110 42 110 112z" fill="#41c0bf"/>
+      <path d="M256 272v112" stroke-width="2.5"/>
+      <rect x="238" y="218" width="36" height="56" rx="10" fill="#f9fbf2"/>
+      <circle cx="256" cy="168" r="62" fill="#f9fbf2"/>
+      <!-- headwrap -->
+      <path d="M195 164a61 61 0 0 1 122 0c0-16-27-26-61-26s-61 10-61 26z" fill="#cdda8f"/>
+      <path d="M195 164h122" stroke-width="2.5"/>
+      <g fill="#162e25" stroke="none"><circle cx="235" cy="186" r="5"/><circle cx="277" cy="186" r="5"/></g>
+      <path d="M239 206a21 15 0 0 0 34 0" stroke-linecap="round" fill="none"/>
+    </g>
+    <g fill="#41c0bf" stroke="#162e25" stroke-width="2"><circle cx="428" cy="120" r="6"/><circle cx="86" cy="252" r="5"/></g>
+  </g>
+
+  <!-- Panel 3 — brand designer -->
+  <g transform="translate(1024,0)">
+    <rect width="512" height="384" fill="#f9fbf2"/>
+    <g stroke="#7da995" stroke-width="2" stroke-dasharray="5 7">
+      <circle cx="256" cy="188" r="148"/>
+      <path d="M40 330h432"/>
+    </g>
+    <g stroke="#162e25" stroke-width="3" stroke-linejoin="round">
+      <!-- a data store and a request reaching it: backend, plainly -->
+      <path d="M92 92c0-8 18-14 40-14s40 6 40 14v46c0 8-18 14-40 14s-40-6-40-14z" fill="#41c0bf"/>
+      <ellipse cx="132" cy="92" rx="40" ry="14" fill="#b5d896"/>
+      <path d="M92 115c0 8 18 14 40 14s40-6 40-14" stroke-width="2.5" fill="none"/>
+      <circle cx="410" cy="268" r="28" fill="#cdda8f"/>
+      <path d="M392 268h30m-11-11 11 11-11 11" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <!-- figure -->
+      <path d="M146 384c0-70 49-112 110-112s110 42 110 112z" fill="#cdda8f"/>
+      <path d="M256 272v112" stroke-width="2.5"/>
+      <rect x="238" y="218" width="36" height="56" rx="10" fill="#f9fbf2"/>
+      <circle cx="256" cy="168" r="62" fill="#f9fbf2"/>
+      <!-- locs -->
+      <path d="M194 170a62 62 0 0 1 124 0z" fill="#162e25"/>
+      <g stroke-linecap="round" stroke-width="7" stroke="#162e25">
+        <path d="M200 168v42M218 160v54M294 160v54M312 168v42"/>
+      </g>
+      <g fill="#162e25" stroke="none"><circle cx="235" cy="188" r="5"/><circle cx="277" cy="188" r="5"/></g>
+      <path d="M239 208a21 15 0 0 0 34 0" stroke-linecap="round" fill="none"/>
+    </g>
+    <g fill="#b5d896" stroke="#162e25" stroke-width="2"><circle cx="96" cy="286" r="6"/><circle cx="432" cy="96" r="5"/></g>
+  </g>
+</svg>

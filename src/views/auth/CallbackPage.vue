@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import AuthLayout from '@/components/layout/AuthLayout.vue'
+import LoadingSpinner from '@/components/common/LoadingSpinner.vue'
 import { ref, onMounted } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { completeZitadelLogin } from '@/lib/oidc'
@@ -45,15 +47,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
-    <img src="/senpai_logo.svg" alt="Senpai" class="h-12 w-auto mb-6" />
-    <p class="text-gray-700 max-w-sm">{{ message }}</p>
-    <RouterLink
-      v-if="failed"
-      to="/login"
-      class="mt-4 font-medium text-senpai-600 hover:text-senpai-500"
-    >
-      Back to sign in
-    </RouterLink>
-  </div>
+  <AuthLayout :title="failed ? 'Sign in failed' : 'Signing you in…'" eyebrow="Your account">
+    <div class="text-center" role="status">
+      <LoadingSpinner v-if="!failed" size="lg" class="mx-auto mb-6" />
+      <p class="text-gray-700">{{ message }}</p>
+      <RouterLink v-if="failed" to="/login" class="auth-primary mt-6">Back to sign in</RouterLink>
+    </div>
+  </AuthLayout>
 </template>

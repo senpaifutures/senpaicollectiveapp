@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import type { PublicMemberProfile } from '@/types'
 import { useSkillsStore } from '@/stores/skills'
-import { UserCircleIcon, MapPinIcon } from '@heroicons/vue/24/outline'
+import { UserCircleIcon, MapPinIcon, ArrowUpRightIcon } from '@heroicons/vue/24/outline'
 import { ShieldCheckIcon, StarIcon, SparklesIcon } from '@heroicons/vue/24/solid'
 
 interface Props {
@@ -108,132 +108,38 @@ const experienceLevelLabels: Record<string, string> = {
 </script>
 
 <template>
-  <RouterLink
-    :to="`/members/${memberData.id}`"
-    class="block bg-white rounded-xl border border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all duration-200 overflow-hidden group"
-  >
-    <!-- Card Content -->
-    <div class="p-5">
-      <!-- Top Section: Avatar + Name -->
-      <div class="flex items-start gap-4">
-        <!-- Avatar with Role Indicator -->
-        <div class="relative flex-shrink-0">
-          <div
-            :class="[
-              'h-16 w-16 rounded-full overflow-hidden ring-2 ring-offset-2',
-              isAdmin ? 'ring-red-400' : isScout ? 'ring-amber-400' : isOG ? 'ring-senpai-300' : 'ring-gray-100'
-            ]"
-          >
-            <img
-              v-if="memberData.photo_url"
-              :src="memberData.photo_url"
-              :alt="displayName"
-              class="h-full w-full object-cover"
-            />
-            <div v-else class="h-full w-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-              <UserCircleIcon class="h-10 w-10 text-gray-400" />
-            </div>
-          </div>
-          <!-- Role Icon Badge -->
-          <div
-            v-if="isAdmin"
-            class="absolute -bottom-1 -right-1 h-6 w-6 bg-red-500 rounded-full flex items-center justify-center ring-2 ring-white"
-            title="Admin"
-          >
-            <ShieldCheckIcon class="h-3.5 w-3.5 text-white" />
-          </div>
-          <div
-            v-else-if="isScout"
-            class="absolute -bottom-1 -right-1 h-6 w-6 bg-amber-500 rounded-full flex items-center justify-center ring-2 ring-white"
-            title="Scout"
-          >
-            <StarIcon class="h-3.5 w-3.5 text-white" />
-          </div>
-          <div
-            v-else-if="isOG"
-            class="absolute -bottom-1 -right-1 h-6 w-6 bg-senpai-500 rounded-full flex items-center justify-center ring-2 ring-white"
-            title="OG Member"
-          >
-            <SparklesIcon class="h-3.5 w-3.5 text-white" />
-          </div>
-        </div>
-
-        <!-- Name & Primary Info -->
-        <div class="flex-1 min-w-0">
-          <h3 class="text-base font-semibold text-gray-900 group-hover:text-senpai-600 truncate transition-colors">
-            {{ displayName }}
-          </h3>
-          <p v-if="memberData.primary_skill_name" class="text-sm text-gray-600 truncate">
-            {{ memberData.primary_skill_name }}
-          </p>
-          <div v-if="displayLocation" class="flex items-center mt-1 text-xs text-gray-500">
-            <MapPinIcon class="h-3.5 w-3.5 mr-1 flex-shrink-0" />
-            <span class="truncate">{{ displayLocation }}</span>
-          </div>
-          <p v-if="memberData.cohort_name" class="text-xs text-senpai-600 mt-0.5 truncate">
-            {{ memberData.cohort_name }}<span v-if="memberData.pod_name"> · {{ memberData.pod_name }}</span>
-          </p>
-        </div>
-      </div>
-
-      <!-- Bio Preview -->
-      <p v-if="memberData.bio" class="mt-4 text-sm text-gray-600 line-clamp-2 leading-relaxed">
-        {{ memberData.bio }}
-      </p>
-      <p v-else-if="!memberData.hasProfile" class="mt-4 text-sm text-gray-400 italic">
-        Profile not yet completed
-      </p>
-
-      <!-- Bottom Section: Tags -->
-      <div class="mt-4 flex flex-wrap items-center gap-2">
-        <!-- Experience Level -->
-        <span
-          v-if="memberData.hasProfile"
-          class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border border-gray-300 text-gray-600"
-        >
-          {{ experienceLevelLabels[memberData.experience_level] || 'New' }}
-        </span>
-
-        <!-- Role Tags -->
-        <span
-          v-if="isAdmin"
-          class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700"
-        >
-          <ShieldCheckIcon class="h-3 w-3" />
-          Admin
-        </span>
-        <span
-          v-if="isScout"
-          class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700"
-        >
-          <StarIcon class="h-3 w-3" />
-          Scout
-        </span>
-        <span
-          v-if="isOG"
-          class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-senpai-50 text-senpai-700"
-        >
-          <SparklesIcon class="h-3 w-3" />
-          OG
-        </span>
-
-        <!-- Skills (show first 2) -->
-        <template v-if="memberData.skills && memberData.skills.length > 0">
-          <span
-            v-for="skill in memberData.skills.slice(0, 2)"
-            :key="skill.id"
-            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600"
-          >
-            {{ skill.name }}
-          </span>
-          <span
-            v-if="memberData.skills.length > 2"
-            class="text-xs text-gray-400"
-          >
-            +{{ memberData.skills.length - 2 }}
-          </span>
-        </template>
-      </div>
-    </div>
+  <RouterLink :to="`/members/${memberData.id}`" class="directory-member-card" :aria-label="`View ${displayName}’s profile`">
+    <div class="member-card-identity"><div class="member-card-photo"><img v-if="memberData.photo_url" :src="memberData.photo_url" :alt="displayName" loading="lazy" /><UserCircleIcon v-else /></div><div class="member-card-name"><h3>{{ displayName }}</h3><p>{{ memberData.primary_skill_name || 'Collective member' }}</p></div><ArrowUpRightIcon class="member-card-arrow" /></div>
+    <p v-if="displayLocation" class="member-card-location"><MapPinIcon />{{ displayLocation }}</p>
+    <p v-if="memberData.bio" class="member-card-bio">{{ memberData.bio }}</p><p v-else class="member-card-bio member-card-placeholder">{{ memberData.hasProfile ? 'Get to know this member through their profile.' : 'Profile not yet completed' }}</p>
+    <div v-if="memberData.skills.length" class="member-card-skills"><span v-for="skill in memberData.skills.slice(0, 3)" :key="skill.id">{{ skill.name }}</span><span v-if="memberData.skills.length > 3">+{{ memberData.skills.length - 3 }}</span></div>
+    <p v-if="memberData.cohort_name" class="member-card-cohort">{{ memberData.cohort_name }}<span v-if="memberData.pod_name"> · {{ memberData.pod_name }}</span></p>
+    <div class="member-card-footer"><span v-if="memberData.hasProfile" class="member-experience">{{ experienceLevelLabels[memberData.experience_level] || 'New' }}</span><div class="member-card-roles"><span v-if="isAdmin"><ShieldCheckIcon />Admin</span><span v-if="isScout"><StarIcon />Scout</span><span v-if="isOG"><SparklesIcon />OG</span></div></div>
   </RouterLink>
 </template>
+
+<style scoped>
+.directory-member-card { display: flex; flex-direction: column; min-width: 0; height: 100%; padding: 22px; background: #fff; border: 1px solid #e2e8ef; border-radius: 12px; color: #344054; text-decoration: none; transition: border-color .15s, box-shadow .15s; }
+.directory-member-card:hover { border-color: #9ccfd0; box-shadow: 0 4px 16px #20394d08; }
+.directory-member-card:focus-visible { outline: 2px solid #148b8c; outline-offset: 3px; }
+.member-card-identity { display: flex; gap: 13px; align-items: center; }
+.member-card-photo { width: 54px; height: 54px; flex: 0 0 54px; border-radius: 14px; overflow: hidden; display: grid; place-items: center; background: #edf3f6; color: #8fa6b5; }
+.member-card-photo img { width: 100%; height: 100%; object-fit: cover; }
+.member-card-photo svg { width: 32px; height: 32px; }
+.member-card-name { min-width: 0; flex: 1; }
+.member-card-name h3 { font-size: 14px; font-weight: 650; line-height: 1.45; overflow-wrap: anywhere; }
+.member-card-name p { font-size: 11px; color: #597184; line-height: 1.6; margin-top: 3px; overflow-wrap: anywhere; }
+.member-card-arrow { width: 16px; height: 16px; flex-shrink: 0; color: #94a4b3; align-self: flex-start; }
+.member-card-location { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #718195; margin-top: 16px; }
+.member-card-location svg { width: 13px; height: 13px; flex-shrink: 0; }
+.member-card-bio { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-size: 12px; line-height: 1.8; color: #5e6e82; margin-top: 14px; min-height: 44px; overflow-wrap: anywhere; }
+.member-card-placeholder { color: #738195; }
+.member-card-skills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 18px; margin-bottom: 16px; }
+.member-card-skills span { font-size: 10px; line-height: 1.6; background: #f4f7fa; border: 1px solid #e8edf2; border-radius: 5px; padding: 4px 7px; color: #5e7186; }
+.member-card-cohort { font-size: 10px; line-height: 1.7; color: #437f87; padding-bottom: 16px; }
+.member-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 14px; border-top: 1px solid #edf0f4; }
+.member-experience { font-size: 10px; color: #718195; }
+.member-card-roles { display: flex; gap: 10px; flex-wrap: wrap; margin-left: auto; }
+.member-card-roles span { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: #587e8d; }
+.member-card-roles svg { width: 12px; height: 12px; }
+</style>

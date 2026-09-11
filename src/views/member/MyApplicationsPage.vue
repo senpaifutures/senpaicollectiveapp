@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { RouterLink } from 'vue-router'
 import { useJobsStore } from '@/stores/jobs'
 import AppLayout from '@/components/layout/AppLayout.vue'
 import ApplicationCard from '@/components/member/ApplicationCard.vue'
@@ -17,6 +18,7 @@ onMounted(() => {
 })
 
 async function handleWithdraw(applicationId: string) {
+  if (withdrawing.value) return
   withdrawing.value = applicationId
   withdrawError.value = null
 
@@ -32,14 +34,14 @@ async function handleWithdraw(applicationId: string) {
 
 <template>
   <AppLayout>
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="my-applications-page max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Header -->
-      <div class="mb-8">
+      <div class="application-page-heading mb-8"><div>
         <h1 class="text-2xl font-bold text-gray-900">My Applications</h1>
         <p class="mt-1 text-gray-600">
-          Track the status of your job applications.
+          Follow your applications, proposals, and feedback.
         </p>
-      </div>
+      </div><RouterLink to="/jobs" class="jobs-link">Browse jobs <span aria-hidden="true">↗</span></RouterLink></div>
 
       <!-- Error Alert -->
       <BaseAlert v-if="withdrawError" type="error" dismissible @dismiss="withdrawError = null" class="mb-6">
@@ -78,9 +80,9 @@ async function handleWithdraw(applicationId: string) {
         <p class="mt-2 text-gray-600">
           Browse the job board to find opportunities that match your skills.
         </p>
-        <BaseButton variant="outline" class="mt-4" to="/jobs">
+        <RouterLink class="jobs-link mt-4" to="/jobs">
           Browse Jobs
-        </BaseButton>
+        </RouterLink>
       </div>
 
       <!-- Applications List -->
@@ -89,9 +91,20 @@ async function handleWithdraw(applicationId: string) {
           v-for="application in jobsStore.myApplications"
           :key="application.id"
           :application="application"
+          :withdrawing="withdrawing === application.id"
+          :disabled="!!withdrawing"
           @withdraw="handleWithdraw"
         />
       </div>
     </div>
   </AppLayout>
 </template>
+
+<style scoped>
+.my-applications-page { max-width: 1050px; }
+.application-page-heading { display: flex; justify-content: space-between; gap: 20px; align-items: center; }
+.application-page-heading p { font-size: 13px; color: #6b7c90; margin-top: 8px; }
+.jobs-link { display: inline-flex; align-items: center; gap: 14px; background: #097d7e; color: #fff; padding: 10px 14px; border-radius: 7px; font-size: 12px; font-weight: 550; white-space: nowrap; }
+.jobs-link:hover { background: #086869; }
+@media (max-width: 640px) { .application-page-heading { align-items: flex-start; flex-direction: column; } }
+</style>

@@ -1,0 +1,65 @@
+/* App surfaces are intentionally independent of the public site's theme. */
+.workspace {
+  --color-gray-50: #f7f9fb;
+  --color-gray-100: #f0f3f6;
+  --color-gray-200: #e5eaf0;
+  --color-gray-300: #ccd4df;
+  --color-gray-400: #8d99a9;
+  --color-gray-500: #758195;
+  --color-gray-600: #566378;
+  --color-gray-700: #3b485e;
+  --color-gray-800: #253349;
+  --color-gray-900: #182738;
+  --color-senpai-50: #ecf9f8;
+  --color-senpai-100: #d7f1ef;
+  --color-senpai-200: #afe3df;
+  --color-senpai-300: #76cfcb;
+  --color-senpai-400: #41c0bf;
+  --color-senpai-500: #148b8c;
+  --color-senpai-600: #097d7e;
+  --color-senpai-700: #086869;
+  --color-senpai-800: #0b5355;
+  --color-senpai-900: #143f44;
+  --color-indigo-50: #eff6fb;
+  --color-indigo-100: #e1edf7;
+  --color-indigo-200: #c6dfef;
+  --color-indigo-500: #4482b4;
+  --color-indigo-600: #2e6e9f;
+  --color-indigo-700: #255b85;
+  --color-indigo-800: #234c6c;
+  --color-indigo-900: #213e56;
+  background: #f7f9fb;
+  color: #253349;
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.workspace-sidebar { position: fixed; inset: 0 auto 0 0; width: 232px; border-right: 1px solid #e6eaf0; overflow-y: auto; overscroll-behavior: contain; z-index: 40; background: #fff; scrollbar-width: thin; }
+.workspace-body { margin-left: 232px; min-width: 0; }
+.workspace-content { min-width: 0; padding-bottom: 32px; }
+.workspace-content > :is(.max-w-7xl, .max-w-6xl) { max-width: 1320px; padding-inline: 32px; }
+.workspace-content h1 { font-size: 28px; line-height: 1.25; letter-spacing: -.8px; font-weight: 650; }
+.workspace-content h2 { letter-spacing: -.25px; }
+.workspace-content :is(.rounded-lg, .rounded-xl, .rounded-2xl) { border-radius: 10px; }
+.workspace-content :is(.shadow-sm, .shadow-md) { box-shadow: 0 1px 2px #172b4d04; }
+.workspace-content .bg-white:is(.shadow-sm, .shadow-md) { border: 1px solid #e5eaf0; }
+.workspace-content :is(input:not([type='checkbox']):not([type='radio']), textarea, select, button[aria-haspopup='listbox']) { border-radius: 7px; font-size: 14px; min-height: 40px; }
+.workspace-content :is(input, textarea, select):focus { --tw-ring-color: #148b8c; border-color: #148b8c; }
+.workspace-content textarea { line-height: 1.7; }
+.workspace-content :is(button, a):is(.bg-senpai-500, .bg-senpai-600, .bg-gray-900) { border-radius: 7px; box-shadow: 0 1px 2px #172b4d0a; }
+.workspace-content table { font-size: 13px; }
+.workspace-content th { background: #f7f9fb; padding-block: 13px; font-size: 10px; letter-spacing: .65px; font-weight: 600; color: #758195; }
+.workspace-content td { padding-block: 16px; }
+.workspace-content tbody tr:hover { background: #fafcfd; }
+.workspace :is(a, button):focus-visible { outline: 2px solid #148b8c; outline-offset: 3px; }
+.workspace-skip { position: fixed; z-index: 100; top: -80px; left: 250px; background: #182738; color: #fff; padding: 10px 18px; border-radius: 5px; font-size: 13px; }
+.workspace-skip:focus { top: 12px; }
+.workspace-navigation-dialog { position: relative; z-index: 80; }
+.workspace-navigation-backdrop { position: fixed; inset: 0; background: #18273866; }
+.workspace-navigation-panel { position: fixed; inset: 0 auto 0 0; width: min(300px, calc(100vw - 48px)); overflow-y: auto; background: #fff; overscroll-behavior: contain; padding-bottom: env(safe-area-inset-bottom); }
+.workspace-navigation-close { position: absolute; right: 10px; top: 12px; padding: 8px; color: #6b788c; border-radius: 6px; }
+.workspace-navigation-close svg { width: 18px; height: 18px; }
+.workspace-navigation-close:focus-visible { outline: 2px solid #148b8c; }
+@media (min-width: 1024px) and (max-width: 1199px) { .workspace-sidebar { width: 212px; } .workspace-body { margin-left: 212px; } .workspace-content > :is(.max-w-7xl, .max-w-6xl) { padding-inline: 24px; } }
+@media (max-width: 1023px) { .workspace-sidebar { display: none; } .workspace-body { margin-left: 0; } .workspace-content { padding-bottom: calc(82px + env(safe-area-inset-bottom)); } .workspace-skip { left: 20px; } }
+@media (max-width: 640px) { .workspace-content > :is(.max-w-7xl, .max-w-6xl) { padding-inline: 20px; } .workspace-content h1 { font-size: 25px; letter-spacing: -.6px; } .workspace-content :is(input:not([type='checkbox']):not([type='radio']), textarea, select, button[aria-haspopup='listbox']) { font-size: 16px; } }

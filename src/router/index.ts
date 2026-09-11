@@ -23,8 +23,8 @@ const router = createRouter({
       name: 'home',
       component: () => import('@/views/public/HomePage.vue'),
       meta: {
-        title: "Senpai Collective | Africa's Elite Creative Community",
-        description: "Join Africa's elite community of creatives building the future through culture, technology, business, art, and systems."
+        title: "SENPAI COLLECTIVE | Building Africa’s Future Together",
+        description: "A community of movers, shapers, and thinkers building the future systems of Africa through shared projects, verified skills, and paths to shared ownership."
       }
     },
     {

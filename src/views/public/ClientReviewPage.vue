@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PublicFormLayout from '@/components/layout/PublicFormLayout.vue'
 import { ref, computed } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { jobsApi } from '@/api'
@@ -93,19 +94,7 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white shadow-sm">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div class="flex items-center justify-between">
-          <RouterLink to="/" class="text-xl font-bold text-senpai-600">
-            Senpai Collective
-          </RouterLink>
-        </div>
-      </div>
-    </header>
-
-    <main class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <PublicFormLayout eyebrow="Help our people grow">
       <!-- Success State -->
       <div v-if="submitted" class="text-center">
         <div class="bg-white rounded-lg shadow-sm p-8">
@@ -161,6 +150,8 @@ async function handleSubmit() {
                   :key="star"
                   type="button"
                   @click="setRating(category.key, star)"
+                  :aria-label="`${category.label}: ${star} out of 5`"
+                  :aria-pressed="star === (form as any)[category.key]"
                   class="p-1 focus:outline-none focus:ring-2 focus:ring-senpai-500 rounded"
                 >
                   <component
@@ -233,6 +224,6 @@ async function handleSubmit() {
           </div>
         </form>
       </div>
-    </main>
-  </div>
+    
+  </PublicFormLayout>
 </template>

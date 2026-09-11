@@ -1,29 +1,48 @@
 <script setup lang="ts">
+import PublicDocumentLayout from '@/components/layout/PublicDocumentLayout.vue'
 import { RouterLink } from 'vue-router'
 
 const lastUpdated = 'July 2026'
+
+const sections = [
+  {
+    "id": "section-1",
+    "label": "1. Show up and contribute"
+  },
+  {
+    "id": "section-2",
+    "label": "2. Lift the people around you"
+  },
+  {
+    "id": "section-3",
+    "label": "3. Keep what's shared here in confidence"
+  },
+  {
+    "id": "section-4",
+    "label": "4. Do the work honestly"
+  },
+  {
+    "id": "section-5",
+    "label": "5. Respect, always"
+  },
+  {
+    "id": "section-6",
+    "label": "6. Carry the name"
+  },
+  {
+    "id": "section-7",
+    "label": "What happens if this isn't followed"
+  },
+  {
+    "id": "section-8",
+    "label": "And if you think we've got it wrong"
+  }
+]
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-100">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <RouterLink to="/" class="flex items-center">
-          <img src="/senpai_logo.svg" alt="Senpai Collective" class="h-8 w-auto" />
-        </RouterLink>
-        <RouterLink to="/join" class="text-sm font-medium text-gray-700 hover:text-gray-900">
-          Apply &rarr;
-        </RouterLink>
-      </div>
-    </header>
-
-    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <p class="text-sm text-gray-500 uppercase tracking-wide mb-2">Senpai Collective</p>
-      <h1 class="text-3xl font-bold text-gray-900">Community Guidelines</h1>
-      <p class="mt-2 text-sm text-gray-500">Last updated: {{ lastUpdated }}</p>
-
-      <p class="mt-6 text-gray-700 leading-relaxed">
+  <PublicDocumentLayout title="Community Guidelines" :last-updated="lastUpdated" :sections="sections">
+    <p class="mt-6 text-gray-700 leading-relaxed">
         This is the agreement every member accepts on their first day — the concrete,
         day-to-day version of what the
         <RouterLink to="/terms" class="text-senpai-600 underline hover:text-senpai-700">Terms of Membership</RouterLink>
@@ -33,7 +52,7 @@ const lastUpdated = 'July 2026'
       </p>
 
       <div class="prose prose-gray mt-8 max-w-none text-gray-700 leading-relaxed space-y-8">
-        <section>
+        <section id="section-1">
           <h2 class="text-xl font-semibold text-gray-900">1. Show up and contribute</h2>
           <p>
             No spectators. Every member here builds, helps, or shares — that's the deal, not
@@ -45,7 +64,7 @@ const lastUpdated = 'July 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-2">
           <h2 class="text-xl font-semibold text-gray-900">2. Lift the people around you</h2>
           <p>
             We rise together or not at all. That means: answer questions when you know the
@@ -56,7 +75,7 @@ const lastUpdated = 'July 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-3">
           <h2 class="text-xl font-semibold text-gray-900">3. Keep what's shared here in confidence</h2>
           <p>
             Trust is the whole asset. Members share work-in-progress, unfinished ideas, and
@@ -79,7 +98,7 @@ const lastUpdated = 'July 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-4">
           <h2 class="text-xl font-semibold text-gray-900">4. Do the work honestly</h2>
           <p>
             Your reputation here is real and it follows you — your Senpai ID, your task
@@ -91,7 +110,7 @@ const lastUpdated = 'July 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-5">
           <h2 class="text-xl font-semibold text-gray-900">5. Respect, always</h2>
           <p>
             Harassment, discrimination, spam, and unlawful activity aren't tolerated — full
@@ -102,7 +121,7 @@ const lastUpdated = 'July 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-6">
           <h2 class="text-xl font-semibold text-gray-900">6. Carry the name</h2>
           <p>
             Membership here means the collective stakes its name on you — to clients, to
@@ -174,7 +193,7 @@ const lastUpdated = 'July 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-7">
           <h2 class="text-xl font-semibold text-gray-900">What happens if this isn't followed</h2>
           <p>
             Most of the time, a quiet word from an admin is enough — nobody's perfect and this
@@ -190,7 +209,7 @@ const lastUpdated = 'July 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-8">
           <h2 class="text-xl font-semibold text-gray-900">And if you think we've got it wrong</h2>
           <p>
             The standard runs both ways. Enforcing it on you without giving you a way to
@@ -238,6 +257,5 @@ const lastUpdated = 'July 2026'
         <span class="mx-2 text-gray-300">·</span>
         <RouterLink to="/privacy" class="text-senpai-600 underline hover:text-senpai-700">Privacy Policy</RouterLink>
       </div>
-    </main>
-  </div>
+  </PublicDocumentLayout>
 </template>

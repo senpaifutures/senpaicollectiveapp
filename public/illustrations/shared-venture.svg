@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">From shared work to a shared venture</title>
+  <desc id="desc">Three different building blocks form a larger structure, representing a founding team creating a venture together.</desc>
+  <ellipse cx="315" cy="255" rx="193" ry="26" fill="#d9decd"/>
+  <g stroke="#b9c9b4" stroke-width="1.5"><path d="m64 220 237-122 237 122M99 240l202-104 202 104"/><path d="M83 157h54m332 0h54" stroke-dasharray="5 7"/></g>
+  <g stroke="#263f33" stroke-width="2.5" stroke-linejoin="round">
+    <path d="m152 195 75-39 75 39-75 39z" fill="#dbeecb"/>
+    <path d="m152 195 75 39v43l-75-39z" fill="#cdda8f"/>
+    <path d="m227 234 75-39v43l-75 39z" fill="#8d9c66"/>
+    <path d="m302 195 75-39 75 39-75 39z" fill="#b1e7dc"/>
+    <path d="m302 195 75 39v43l-75-39z" fill="#41c0bf"/>
+    <path d="m377 234 75-39v43l-75 39z" fill="#297c70"/>
+    <path d="m227 109 75-39 75 39-75 39z" fill="#fbfcf5"/>
+    <path d="m227 109 75 39v86l-75-39z" fill="#deeadb"/>
+    <path d="m302 148 75-39v86l-75 39z" fill="#8fb7a0"/>
+    <path d="m258 112 44-23 44 23-44 23z" fill="#41c0bf"/>
+    <path d="m242 140 13 7v19l-13-7zm26 14 13 7v19l-13-7zm-26 29 13 7v19l-13-7zm26 14 13 7v19l-13-7z" fill="#fff"/>
+    <path d="m323 159 24-13v47l-24 13z" fill="#244d3b"/>
+    <path d="M302 108V26" stroke-linecap="round"/>
+    <path d="M303 27c23-20 38 15 64-5v40c-26 20-41-15-64 5z" fill="#cdda8f"/>
+    <path d="m326 43 7 4 11-6" stroke-linecap="round"/>
+  </g>
+  <g stroke="#263f33" stroke-width="2">
+    <circle cx="111" cy="127" r="25" fill="#fbfcf5"/><circle cx="111" cy="121" r="6" fill="#8ab6a4"/><path d="M99 141v-4a12 12 0 0 1 24 0v4" fill="#8ab6a4"/>
+    <circle cx="491" cy="115" r="25" fill="#fbfcf5"/><circle cx="491" cy="109" r="6" fill="#41c0bf"/><path d="M479 129v-4a12 12 0 0 1 24 0v4" fill="#41c0bf"/>
+    <path d="M154 70h16m-8-8v16M442 43h12m-6-6v12" stroke-linecap="round"/>
+  </g>
+</svg>

@@ -1,30 +1,61 @@
 <script setup lang="ts">
+import PublicDocumentLayout from '@/components/layout/PublicDocumentLayout.vue'
 import { RouterLink } from 'vue-router'
 
 // NOTE: Starter copy. Review with counsel before relying on it legally.
 const lastUpdated = 'August 2026'
+
+const sections = [
+  {
+    "id": "section-1",
+    "label": "1. What the Pool is"
+  },
+  {
+    "id": "section-2",
+    "label": "2. How you earn units"
+  },
+  {
+    "id": "section-3",
+    "label": "3. How units are issued"
+  },
+  {
+    "id": "section-4",
+    "label": "4. Vesting"
+  },
+  {
+    "id": "section-5",
+    "label": "5. Leaving"
+  },
+  {
+    "id": "section-6",
+    "label": "6. If you brought the idea"
+  },
+  {
+    "id": "section-7",
+    "label": "7. How and when it pays"
+  },
+  {
+    "id": "section-8",
+    "label": "8. What you can see"
+  },
+  {
+    "id": "section-9",
+    "label": "9. Changes to this policy"
+  },
+  {
+    "id": "section-10",
+    "label": "10. Tax"
+  },
+  {
+    "id": "section-11",
+    "label": "11. Questions"
+  }
+]
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-100">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <RouterLink to="/" class="flex items-center">
-          <img src="/senpai_logo.svg" alt="Senpai Collective" class="h-8 w-auto" />
-        </RouterLink>
-        <RouterLink to="/join" class="text-sm font-medium text-gray-700 hover:text-gray-900">
-          Apply &rarr;
-        </RouterLink>
-      </div>
-    </header>
-
-    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <p class="text-sm text-gray-500 uppercase tracking-wide mb-2">Senpai Collective</p>
-      <h1 class="text-3xl font-bold text-gray-900">The Collective Pool</h1>
-      <p class="mt-2 text-sm text-gray-500">Last updated: {{ lastUpdated }}</p>
-
-      <div class="mt-4 rounded-lg bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+  <PublicDocumentLayout title="The Collective Pool" :last-updated="lastUpdated" :sections="sections" illustration="/illustrations/shared-foundation.svg">
+    <div class="mt-4 rounded-lg bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
         <strong>This is new, and it will change.</strong> The Pool is deliberately experimental.
         The way units are earned, the weights, and the schedules will be revised as we learn what
         actually works for the community. What will never change is that
@@ -39,7 +70,7 @@ const lastUpdated = 'August 2026'
       </p>
 
       <div class="prose prose-gray mt-8 max-w-none text-gray-700 leading-relaxed space-y-8">
-        <section>
+        <section id="section-1">
           <h2 class="text-xl font-semibold text-gray-900">1. What the Pool is</h2>
           <p>
             Not every piece of work becomes a company. The platform, the civic redesigns, the
@@ -62,7 +93,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-2">
           <h2 class="text-xl font-semibold text-gray-900">2. How you earn units</h2>
           <p>
             Units come from the contribution record the platform already keeps. Nothing is
@@ -113,7 +144,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-3">
           <h2 class="text-xl font-semibold text-gray-900">3. How units are issued</h2>
           <p>
             Units are not minted continuously. Each quarter an allocation of units is issued
@@ -171,7 +202,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-4">
           <h2 class="text-xl font-semibold text-gray-900">4. Vesting</h2>
           <p>
             Units vest over <strong>four years from the date they are issued</strong>, at 25%
@@ -185,7 +216,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-5">
           <h2 class="text-xl font-semibold text-gray-900">5. Leaving</h2>
           <div class="mt-2 overflow-x-auto">
             <table class="min-w-full text-sm border border-gray-200 bg-white">
@@ -214,7 +245,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-6">
           <h2 class="text-xl font-semibold text-gray-900">6. If you brought the idea</h2>
           <p>
             This one is not about units. It is about equity in a company, and it applies where
@@ -293,7 +324,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-7">
           <h2 class="text-xl font-semibold text-gray-900">7. How and when it pays</h2>
           <p>
             Units pay out only when the collective <strong>realises value in cash</strong>:
@@ -316,7 +347,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-8">
           <h2 class="text-xl font-semibold text-gray-900">8. What you can see</h2>
           <p>
             Because units have no published price, we publish the things that actually
@@ -340,7 +371,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-9">
           <h2 class="text-xl font-semibold text-gray-900">9. Changes to this policy</h2>
           <p>
             The Pool is early and experimental. The points, the weights, the issuance size, and
@@ -369,7 +400,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-10">
           <h2 class="text-xl font-semibold text-gray-900">10. Tax</h2>
           <p>
             A payout is income to you, and you are responsible for your own tax position.
@@ -380,7 +411,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-11">
           <h2 class="text-xl font-semibold text-gray-900">11. Questions</h2>
           <p>
             Ask. Reach us at
@@ -398,6 +429,5 @@ const lastUpdated = 'August 2026'
         <span class="mx-2 text-gray-300">&middot;</span>
         <RouterLink to="/join" class="text-senpai-600 underline hover:text-senpai-700">Back to application</RouterLink>
       </div>
-    </main>
-  </div>
+  </PublicDocumentLayout>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useMembersStore } from '@/stores/members'
 import { useSkillsStore } from '@/stores/skills'
 import type { ExperienceLevel } from '@/types'
@@ -79,6 +79,7 @@ function fetchMembers() {
 
 // Debounced search
 let searchTimeout: ReturnType<typeof setTimeout>
+onUnmounted(() => clearTimeout(searchTimeout))
 watch(search, () => {
   clearTimeout(searchTimeout)
   searchTimeout = setTimeout(fetchMembers, 300)
@@ -113,22 +114,22 @@ function getExperienceLabel(level: ExperienceLevel): string {
 
 <template>
   <AppLayout>
-    <div class="min-h-screen bg-gray-50">
+    <div class="directory-page">
       <!-- Hero Header -->
-      <div class="bg-white border-b border-gray-200">
+      <div class="directory-header">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h1 class="text-3xl font-bold text-gray-900">Member Directory</h1>
               <p class="mt-2 text-gray-600 max-w-2xl">
-                Discover talented creatives in the Senpai community. Connect, collaborate, and grow together.
+                Find people to learn from, collaborate with, and build alongside.
               </p>
             </div>
             <!-- Stats -->
             <div class="flex items-center gap-6 text-sm">
               <div class="flex items-center gap-2 text-gray-600">
                 <UserGroupIcon class="h-5 w-5" />
-                <span class="font-medium">{{ membersStore.pagination?.total || 0 }}</span>
+                <span class="font-medium">{{ membersStore.loading || membersStore.error ? '—' : (membersStore.pagination?.total ?? 0) }}</span>
                 <span>Members</span>
               </div>
             </div>
@@ -140,20 +141,25 @@ function getExperienceLabel(level: ExperienceLevel): string {
               <MagnifyingGlassIcon class="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 v-model="search"
-                type="text"
+                type="search"
+                aria-label="Search members"
                 placeholder="Search by name, skill, or location..."
                 class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white transition-colors"
               />
             </div>
             <div class="flex gap-3">
-              <div class="w-40">
+              <div class="w-40 directory-sort">
                 <BaseSelect
                   v-model="sortBy"
                   :options="sortOptions"
+                  label="Sort by"
                   placeholder="Sort by"
                 />
               </div>
               <button
+                type="button"
+                :aria-expanded="showFilters"
+                aria-controls="directory-filters"
                 @click="showFilters = !showFilters"
                 :class="[
                   'inline-flex items-center px-4 py-2.5 rounded-xl text-sm font-medium transition-all',
@@ -183,7 +189,7 @@ function getExperienceLabel(level: ExperienceLevel): string {
             leave-from-class="opacity-100 translate-y-0"
             leave-to-class="opacity-0 -translate-y-2"
           >
-            <div v-show="showFilters" class="mt-4 bg-gray-50 rounded-xl p-4 border border-gray-200">
+            <div id="directory-filters" v-show="showFilters" class="mt-4 bg-gray-50 rounded-xl p-4 border border-gray-200">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <BaseMultiSelect
                   v-model="selectedSkills"
@@ -209,7 +215,7 @@ function getExperienceLabel(level: ExperienceLevel): string {
               class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700"
             >
               "{{ search }}"
-              <button @click="search = ''" class="hover:text-gray-900">
+              <button aria-label="Clear search" @click="search = ''" class="hover:text-gray-900">
                 <XMarkIcon class="h-4 w-4" />
               </button>
             </span>
@@ -219,7 +225,7 @@ function getExperienceLabel(level: ExperienceLevel): string {
               class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm bg-indigo-100 text-indigo-700"
             >
               {{ getSkillName(skillId) }}
-              <button @click="removeSkillFilter(skillId)" class="hover:text-indigo-900">
+              <button :aria-label="`Remove ${getSkillName(skillId)} filter`" @click="removeSkillFilter(skillId)" class="hover:text-indigo-900">
                 <XMarkIcon class="h-4 w-4" />
               </button>
             </span>
@@ -229,7 +235,7 @@ function getExperienceLabel(level: ExperienceLevel): string {
               class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm bg-purple-100 text-purple-700"
             >
               {{ getExperienceLabel(level) }}
-              <button @click="removeExperienceFilter(level)" class="hover:text-purple-900">
+              <button :aria-label="`Remove ${getExperienceLabel(level)} filter`" @click="removeExperienceFilter(level)" class="hover:text-purple-900">
                 <XMarkIcon class="h-4 w-4" />
               </button>
             </span>
@@ -311,7 +317,7 @@ function getExperienceLabel(level: ExperienceLevel): string {
         </div>
 
         <!-- Members Grid -->
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <div v-else class="directory-card-grid">
           <MemberCard
             v-for="member in membersStore.members"
             :key="member.id"
@@ -351,3 +357,16 @@ function getExperienceLabel(level: ExperienceLevel): string {
     </div>
   </AppLayout>
 </template>
+
+<style scoped>
+.directory-page { max-width: 1384px; margin: auto; }
+.directory-header { border-bottom: 1px solid #e5eaf0; }
+.directory-header > div, .directory-page > .max-w-7xl { padding-inline: 32px; }
+.directory-header h1 { font-size: 27px; }
+.directory-header p { font-size: 13px; color: #718195; }
+.directory-sort :deep(label) { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+.directory-header input { background: #fff; font-size: 13px; min-height: 44px; }
+.directory-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 18px; }
+.directory-page :deep(button) { border-radius: 7px; }
+@media (max-width: 640px) { .directory-header > div, .directory-page > .max-w-7xl { padding-inline: 20px; padding-block: 24px; } .directory-header input { font-size: 16px; } }
+</style>

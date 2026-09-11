@@ -1,156 +1,42 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
+import { HomeIcon, ClipboardDocumentListIcon, RocketLaunchIcon, UsersIcon, Bars3Icon, ClipboardDocumentCheckIcon } from '@heroicons/vue/24/outline'
 import { useAuthStore } from '@/stores/auth'
-import {
-  HomeIcon,
-  ClipboardDocumentListIcon,
-  ArrowPathRoundedSquareIcon,
-  RocketLaunchIcon,
-  UsersIcon,
-  Bars3Icon,
-  XMarkIcon,
-  UserCircleIcon,
-  Cog6ToothIcon,
-  ArrowRightOnRectangleIcon,
-  BriefcaseIcon,
-  DocumentTextIcon,
-  ChartBarSquareIcon,
-  ChartBarIcon,
-  SparklesIcon
-} from '@heroicons/vue/24/outline'
-
-const router = useRouter()
-const authStore = useAuthStore()
-const moreOpen = ref(false)
-
-function closeMore() {
-  moreOpen.value = false
-}
-
-function handleLogout() {
-  closeMore()
-  authStore.logout()
-  router.push('/login')
-}
+import { useAppNavigation } from '@/composables/useAppNavigation'
+const emit = defineEmits<{ 'open-navigation': [] }>()
+const auth = useAuthStore()
+const { isAdminSpace, isActive } = useAppNavigation()
+const tabs = computed(() => {
+  if (isAdminSpace.value && auth.isAdmin) return [
+    { name: 'Overview', href: '/admin', icon: HomeIcon },
+    { name: 'Applications', href: '/admin/applications', icon: ClipboardDocumentCheckIcon },
+    { name: 'Members', href: '/admin/members', icon: UsersIcon },
+    { name: 'Tasks', href: '/admin/tasks', icon: ClipboardDocumentListIcon },
+  ]
+  if (isAdminSpace.value && auth.isCommunityLead) return [{ name: 'Applications', href: '/admin/applications', icon: ClipboardDocumentCheckIcon }]
+  return [
+    { name: 'Overview', href: '/dashboard', icon: HomeIcon },
+    ...(auth.isApproved ? [
+      { name: 'Tasks', href: '/tasks', icon: ClipboardDocumentListIcon },
+      { name: 'Projects', href: '/projects', icon: RocketLaunchIcon },
+      { name: 'People', href: '/members', icon: UsersIcon },
+    ] : []),
+  ]
+})
 </script>
 
 <template>
-  <nav
-    v-if="authStore.isAuthenticated"
-    class="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-gray-200 sm:hidden pb-[env(safe-area-inset-bottom)]"
-  >
-    <div class="grid grid-cols-5 h-16">
-      <RouterLink
-        to="/dashboard"
-        class="flex flex-col items-center justify-center gap-0.5 text-gray-500"
-        active-class="!text-senpai-600"
-      >
-        <HomeIcon class="h-6 w-6" />
-        <span class="text-[11px] font-medium">Home</span>
-      </RouterLink>
-      <template v-if="authStore.isApproved">
-        <RouterLink
-          to="/tasks"
-          class="flex flex-col items-center justify-center gap-0.5 text-gray-500"
-          active-class="!text-senpai-600"
-        >
-          <ClipboardDocumentListIcon class="h-6 w-6" />
-          <span class="text-[11px] font-medium">Tasks</span>
-        </RouterLink>
-        <RouterLink
-          to="/projects"
-          class="flex flex-col items-center justify-center gap-0.5 text-gray-500"
-          active-class="!text-senpai-600"
-        >
-          <RocketLaunchIcon class="h-6 w-6" />
-          <span class="text-[11px] font-medium">Projects</span>
-        </RouterLink>
-        <RouterLink
-          to="/members"
-          class="flex flex-col items-center justify-center gap-0.5 text-gray-500"
-          active-class="!text-senpai-600"
-        >
-          <UsersIcon class="h-6 w-6" />
-          <span class="text-[11px] font-medium">Directory</span>
-        </RouterLink>
-      </template>
-      <button
-        type="button"
-        class="flex flex-col items-center justify-center gap-0.5 text-gray-500"
-        :class="{ 'col-span-4': !authStore.isApproved }"
-        @click="moreOpen = true"
-      >
-        <Bars3Icon class="h-6 w-6" />
-        <span class="text-[11px] font-medium">More</span>
-      </button>
-    </div>
+  <nav v-if="auth.isAuthenticated" class="app-mobile-tabs" aria-label="Quick navigation">
+    <RouterLink v-for="tab in tabs" :key="tab.href" :to="tab.href" :class="{ 'mobile-tab-active': isActive(tab.href) }" :aria-current="isActive(tab.href) ? 'page' : undefined"><component :is="tab.icon" /><span>{{ tab.name }}</span></RouterLink>
+    <button type="button" @click="emit('open-navigation')" aria-label="Open all workspace navigation"><Bars3Icon /><span>More</span></button>
   </nav>
-
-  <!-- More sheet: everything that doesn't fit in the tab bar -->
-  <Teleport to="body">
-    <div v-if="moreOpen" class="fixed inset-0 z-50 sm:hidden">
-      <div class="fixed inset-0 bg-black/50" @click="closeMore" />
-      <div class="fixed bottom-0 inset-x-0 bg-white rounded-t-2xl shadow-2xl max-h-[80vh] overflow-y-auto pb-[env(safe-area-inset-bottom)]">
-        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-          <span class="text-sm font-semibold text-gray-900">Menu</span>
-          <button type="button" class="p-1 text-gray-400" @click="closeMore">
-            <XMarkIcon class="h-6 w-6" />
-          </button>
-        </div>
-        <div class="py-2">
-          <RouterLink to="/profile" class="flex items-center px-4 py-3 text-sm text-gray-700" @click="closeMore">
-            <UserCircleIcon class="h-5 w-5 mr-3 text-gray-400" />
-            Your Profile
-          </RouterLink>
-          <template v-if="authStore.isApproved">
-            <RouterLink to="/circles" class="flex items-center px-4 py-3 text-sm text-gray-700" @click="closeMore">
-              <ArrowPathRoundedSquareIcon class="h-5 w-5 mr-3 text-gray-400" />
-              Circles
-            </RouterLink>
-            <RouterLink to="/jobs" class="flex items-center px-4 py-3 text-sm text-gray-700" @click="closeMore">
-              <BriefcaseIcon class="h-5 w-5 mr-3 text-gray-400" />
-              Jobs
-            </RouterLink>
-            <RouterLink to="/my-applications" class="flex items-center px-4 py-3 text-sm text-gray-700" @click="closeMore">
-              <DocumentTextIcon class="h-5 w-5 mr-3 text-gray-400" />
-              My Applications
-            </RouterLink>
-            <RouterLink to="/assigned-jobs" class="flex items-center px-4 py-3 text-sm text-gray-700" @click="closeMore">
-              <ClipboardDocumentListIcon class="h-5 w-5 mr-3 text-gray-400" />
-              Assigned Jobs
-            </RouterLink>
-            <RouterLink to="/performance" class="flex items-center px-4 py-3 text-sm text-gray-700" @click="closeMore">
-              <ChartBarSquareIcon class="h-5 w-5 mr-3 text-gray-400" />
-              Performance
-            </RouterLink>
-            <RouterLink to="/scout/guide" class="flex items-center px-4 py-3 text-sm text-gray-700" @click="closeMore">
-              <SparklesIcon class="h-5 w-5 mr-3 text-gray-400" />
-              Scout Guide
-            </RouterLink>
-          </template>
-          <RouterLink v-if="authStore.isScout" to="/scout" class="flex items-center px-4 py-3 text-sm text-gray-700" @click="closeMore">
-            <UsersIcon class="h-5 w-5 mr-3 text-gray-400" />
-            Scout Dashboard
-          </RouterLink>
-          <RouterLink v-if="authStore.isAdmin" to="/admin" class="flex items-center px-4 py-3 text-sm text-gray-700" @click="closeMore">
-            <ChartBarIcon class="h-5 w-5 mr-3 text-gray-400" />
-            Admin
-          </RouterLink>
-          <RouterLink v-else-if="authStore.isCommunityLead" to="/admin/applications" class="flex items-center px-4 py-3 text-sm text-gray-700" @click="closeMore">
-            <ChartBarIcon class="h-5 w-5 mr-3 text-gray-400" />
-            Applications
-          </RouterLink>
-          <RouterLink to="/settings" class="flex items-center px-4 py-3 text-sm text-gray-700" @click="closeMore">
-            <Cog6ToothIcon class="h-5 w-5 mr-3 text-gray-400" />
-            Settings
-          </RouterLink>
-          <button type="button" class="flex w-full items-center px-4 py-3 text-sm text-gray-700" @click="handleLogout">
-            <ArrowRightOnRectangleIcon class="h-5 w-5 mr-3 text-gray-400" />
-            Sign out
-          </button>
-        </div>
-      </div>
-    </div>
-  </Teleport>
 </template>
+
+<style scoped>
+.app-mobile-tabs { position: fixed; bottom: 0; inset-inline: 0; z-index: 35; display: flex; padding-bottom: env(safe-area-inset-bottom); background: #fff; border-top: 1px solid #e6eaf0; }
+.app-mobile-tabs a, .app-mobile-tabs button { flex: 1; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 4px; min-height: 62px; color: #84909f; font-size: 10px; font-weight: 550; }
+.app-mobile-tabs svg { width: 21px; height: 21px; stroke-width: 1.6; }
+.app-mobile-tabs .mobile-tab-active { color: #0a8585; background: #f2fbfa; }
+@media (min-width: 1024px) { .app-mobile-tabs { display: none; } }
+</style>

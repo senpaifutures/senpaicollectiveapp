@@ -1,30 +1,65 @@
 <script setup lang="ts">
+import PublicDocumentLayout from '@/components/layout/PublicDocumentLayout.vue'
 import { RouterLink } from 'vue-router'
 
 const lastUpdated = 'August 2026'
+
+const sections = [
+  {
+    "id": "section-1",
+    "label": "1. Who controls your data"
+  },
+  {
+    "id": "section-2",
+    "label": "2. What we collect"
+  },
+  {
+    "id": "section-3",
+    "label": "3. How we use it, and on what basis"
+  },
+  {
+    "id": "section-4",
+    "label": "4. Email communication"
+  },
+  {
+    "id": "section-5",
+    "label": "5. What other members can see"
+  },
+  {
+    "id": "section-6",
+    "label": "6. Who we share with"
+  },
+  {
+    "id": "section-7",
+    "label": "7. Data leaving Nigeria"
+  },
+  {
+    "id": "section-8",
+    "label": "8. How long we keep it"
+  },
+  {
+    "id": "section-9",
+    "label": "9. Keeping it secure"
+  },
+  {
+    "id": "section-10",
+    "label": "10. Your rights"
+  },
+  {
+    "id": "section-11",
+    "label": "11. Changes to this policy"
+  },
+  {
+    "id": "section-12",
+    "label": "12. Contact"
+  }
+]
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <header class="bg-white border-b border-gray-100">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <RouterLink to="/" class="flex items-center">
-          <img src="/senpai_logo.svg" alt="Senpai Collective" class="h-8 w-auto" />
-        </RouterLink>
-        <RouterLink to="/join" class="text-sm font-medium text-gray-700 hover:text-gray-900">
-          Apply &rarr;
-        </RouterLink>
-      </div>
-    </header>
-
-    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <p class="text-sm text-gray-500 uppercase tracking-wide mb-2">Senpai Collective</p>
-      <h1 class="text-3xl font-bold text-gray-900">Privacy Policy</h1>
-      <p class="mt-2 text-sm text-gray-500">Last updated: {{ lastUpdated }}</p>
-
-      <div class="prose prose-gray mt-8 max-w-none text-gray-700 leading-relaxed space-y-8">
-        <section>
+  <PublicDocumentLayout title="Privacy Policy" :last-updated="lastUpdated" :sections="sections">
+    <div class="prose prose-gray mt-8 max-w-none text-gray-700 leading-relaxed space-y-8">
+        <section id="section-1">
           <h2 class="text-xl font-semibold text-gray-900">1. Who controls your data</h2>
           <p>
             Senpai Collective is the community; it is operated by
@@ -37,7 +72,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-2">
           <h2 class="text-xl font-semibold text-gray-900">2. What we collect</h2>
           <p>
             When you apply, we collect the information you give us: your name, email,
@@ -55,7 +90,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-3">
           <h2 class="text-xl font-semibold text-gray-900">3. How we use it, and on what basis</h2>
           <p>
             We use your information to review your application, operate the community, match
@@ -73,7 +108,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-4">
           <h2 class="text-xl font-semibold text-gray-900">4. Email communication</h2>
           <p>
             We use your email to send essential messages: verifying your account, the
@@ -82,7 +117,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-5">
           <h2 class="text-xl font-semibold text-gray-900">5. What other members can see</h2>
           <p>
             If your application is accepted, your <strong>full member profile</strong> is
@@ -97,7 +132,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-6">
           <h2 class="text-xl font-semibold text-gray-900">6. Who we share with</h2>
           <p>
             We share data only with the service providers that help us run the platform
@@ -117,7 +152,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-7">
           <h2 class="text-xl font-semibold text-gray-900">7. Data leaving Nigeria</h2>
           <p>
             Some of the services we use to run the platform (hosting, email delivery,
@@ -129,7 +164,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-8">
           <h2 class="text-xl font-semibold text-gray-900">8. How long we keep it</h2>
           <p>
             We keep your data for as long as your membership is active. If your application is
@@ -149,7 +184,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-9">
           <h2 class="text-xl font-semibold text-gray-900">9. Keeping it secure</h2>
           <p>
             Passwords are stored only in hashed form and are never visible to anyone,
@@ -160,7 +195,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-10">
           <h2 class="text-xl font-semibold text-gray-900">10. Your rights</h2>
           <p>
             Under the NDPA you have the right to access the personal data we hold about you,
@@ -176,7 +211,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-11">
           <h2 class="text-xl font-semibold text-gray-900">11. Changes to this policy</h2>
           <p>
             We may update this policy as the platform evolves. The current version will
@@ -184,7 +219,7 @@ const lastUpdated = 'August 2026'
           </p>
         </section>
 
-        <section>
+        <section id="section-12">
           <h2 class="text-xl font-semibold text-gray-900">12. Contact</h2>
           <p>
             Questions about your data, or want to exercise any of the rights in section 10?
@@ -201,6 +236,5 @@ const lastUpdated = 'August 2026'
         <span class="mx-2 text-gray-300">·</span>
         <RouterLink to="/join" class="text-senpai-600 underline hover:text-senpai-700">Back to application</RouterLink>
       </div>
-    </main>
-  </div>
+  </PublicDocumentLayout>
 </template>

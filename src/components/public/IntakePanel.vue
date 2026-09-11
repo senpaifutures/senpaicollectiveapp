@@ -3,6 +3,8 @@ import { ref, computed, onMounted } from 'vue'
 import { intakeApi } from '@/api'
 import type { IntakeSnapshot } from '@/types'
 
+withDefaults(defineProps<{ compact?: boolean }>(), { compact: false })
+
 const intake = ref<IntakeSnapshot | null>(null)
 
 onMounted(async () => {
@@ -45,8 +47,14 @@ const seatsCaption = computed(() => {
 </script>
 
 <template>
-  <div v-if="visible && intake" class="max-w-md mx-auto">
-    <div class="border border-gray-200 bg-white">
+  <div v-if="visible && intake" :class="compact ? 'intake-announcement' : 'max-w-md mx-auto'">
+    <div v-if="compact" class="intake-announcement-content">
+      <span class="announcement-dot" aria-hidden="true" />
+      <strong>Applications open</strong>
+      <span>{{ intake.cohort_name }}</span>
+      <span v-if="closesLabel" class="announcement-close">Closes {{ closesLabel }}</span>
+    </div>
+    <div v-else class="border border-gray-200 bg-white">
       <!-- Status line: which cohort, and that it is open right now. -->
       <div class="flex items-center gap-2 px-4 py-2.5 border-b border-gray-100">
         <span class="relative flex h-2 w-2">
@@ -86,6 +94,11 @@ const seatsCaption = computed(() => {
 </template>
 
 <style scoped>
+.intake-announcement { margin-top: 24px; }
+.intake-announcement-content { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px 12px; font-size: 14px; line-height: 1.6; color: #537060; }
+.intake-announcement-content strong { color: #22624c; font-weight: 600; }
+.announcement-dot { width: 7px; height: 7px; border-radius: 50%; background: #258267; flex-shrink: 0; }
+.announcement-close { font-size: 12px; color: #657366; }
 /* A slow pulse on the status dot — the one moving thing, signalling "live"
    without competing with the photo strip above it. */
 .intake-ping {

@@ -120,7 +120,8 @@ const allLinks = computed(() => {
 
 <template>
   <AppLayout>
-    <div class="px-4 sm:px-6 lg:px-8 py-10">
+    <div class="profile-page-frame">
+      <div class="profile-page-toolbar"><span>My profile</span><RouterLink to="/members">Member directory →</RouterLink></div>
       <ProfileDisplay
         :full-name="profile?.full_name"
         :photo-url="profile?.photo_url"
@@ -144,7 +145,7 @@ const allLinks = computed(() => {
         :member-id="member?.id"
       />
 
-      <div v-if="activity.length" class="max-w-2xl mx-auto mt-8">
+      <div v-if="activity.length" class="profile-activity mt-8">
         <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Recent activity</h2>
         <ul class="bg-white border border-gray-200 rounded-2xl divide-y divide-gray-100">
           <li v-for="a in activity" :key="a.id" class="px-4 py-3 flex items-center justify-between text-sm gap-3">
@@ -164,3 +165,13 @@ const allLinks = computed(() => {
     </div>
   </AppLayout>
 </template>
+
+<style scoped>
+.profile-page-frame { width: min(1120px, 100%); margin-inline: auto; padding: 30px 32px 48px; }
+.profile-page-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 12px; color: #65788c; margin-bottom: 20px; }
+.profile-page-toolbar a { color: #138486; }
+.profile-activity { max-width: 100%; }
+.profile-activity h2 { text-transform: none; letter-spacing: 0; color: #43546b; font-size: 14px; }
+.profile-activity li { padding: 16px 22px; font-size: 12px; }
+@media (max-width: 640px) { .profile-page-frame { padding: 24px 20px 40px; } }
+</style>

@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import AuthLayout from '@/components/layout/AuthLayout.vue'
 import { ref, computed } from 'vue'
 import { useRouter, useRoute, RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import BaseInput from '@/components/common/BaseInput.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import BaseAlert from '@/components/common/BaseAlert.vue'
-import { ClockIcon, XMarkIcon, EnvelopeIcon } from '@heroicons/vue/24/outline'
+import { ClockIcon, EnvelopeIcon } from '@heroicons/vue/24/outline'
 import { authApi } from '@/api'
 
 const router = useRouter()
@@ -101,34 +102,10 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="relative min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gray-50">
-    <RouterLink
-      to="/"
-      aria-label="Close"
-      class="fixed top-4 right-4 sm:top-6 sm:right-6 text-gray-300 hover:text-gray-500 transition-colors z-10"
-    >
-      <XMarkIcon class="h-6 w-6" />
-    </RouterLink>
-
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
-      <RouterLink to="/" class="flex justify-center">
-        <img src="/senpai_logo.svg" alt="Senpai" class="h-12 w-auto" />
-      </RouterLink>
-      <h2 class="mt-6 text-center text-2xl font-bold text-gray-900">
-        Sign in to your account
-      </h2>
-      <p class="mt-2 text-center text-sm text-gray-600">
-        Not a member yet?
-        <RouterLink to="/join" class="font-medium text-senpai-600 hover:text-senpai-500">
-          Apply to join
-        </RouterLink>
-      </p>
-    </div>
-
-    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-      <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+  <AuthLayout title="Sign in to your account" eyebrow="Welcome back">
+    <template #intro><p>Not a member yet? <RouterLink to="/join">Apply to join</RouterLink></p></template>
         <!-- Pending Approval Message -->
-        <div v-if="showPendingMessage" class="mb-6 rounded-lg bg-amber-50 p-4 border border-amber-200">
+        <div v-if="showPendingMessage" class="auth-note mb-6">
           <div class="flex">
             <div class="flex-shrink-0">
               <ClockIcon class="h-6 w-6 text-amber-500" />
@@ -153,7 +130,7 @@ async function handleSubmit() {
 
         <!-- Unverified email: an error the member can actually fix, so it gets
              the fix rather than just the message. -->
-        <div v-if="isUnverifiedError" class="mb-6 border border-amber-200 bg-amber-50 rounded-lg p-4">
+        <div v-if="isUnverifiedError" class="auth-note mb-6">
           <p class="flex items-center gap-2 text-sm font-medium text-gray-900">
             <EnvelopeIcon class="h-4 w-4 text-amber-600" /> Confirm your email first
           </p>
@@ -176,6 +153,8 @@ async function handleSubmit() {
             v-model="form.email"
             type="email"
             label="Email address"
+            name="email"
+            autocomplete="email"
             placeholder="you@example.com"
             :error="errors.email"
             required
@@ -185,6 +164,8 @@ async function handleSubmit() {
             v-model="form.password"
             type="password"
             label="Password"
+            name="password"
+            autocomplete="current-password"
             placeholder="Enter your password"
             :error="errors.password"
             required
@@ -207,7 +188,5 @@ async function handleSubmit() {
             Sign in
           </BaseButton>
         </form>
-      </div>
-    </div>
-  </div>
+  </AuthLayout>
 </template>

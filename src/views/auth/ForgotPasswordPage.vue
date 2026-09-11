@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import AuthLayout from '@/components/layout/AuthLayout.vue'
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import BaseInput from '@/components/common/BaseInput.vue'
 import BaseButton from '@/components/common/BaseButton.vue'
 import BaseAlert from '@/components/common/BaseAlert.vue'
-import { ArrowLeftIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 
 const authStore = useAuthStore()
 
@@ -42,39 +42,8 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="relative min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gray-50">
-    <RouterLink
-      to="/login"
-      class="fixed top-4 left-4 sm:top-6 sm:left-6 inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition-colors z-10"
-    >
-      <ArrowLeftIcon class="h-4 w-4" />
-      Back
-    </RouterLink>
-    <RouterLink
-      to="/"
-      aria-label="Close"
-      class="fixed top-4 right-4 sm:top-6 sm:right-6 text-gray-300 hover:text-gray-500 transition-colors z-10"
-    >
-      <XMarkIcon class="h-6 w-6" />
-    </RouterLink>
-
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
-      <RouterLink to="/" class="flex justify-center">
-        <img src="/senpai_logo.svg" alt="Senpai" class="h-12 w-auto" />
-      </RouterLink>
-      <h2 class="mt-6 text-center text-2xl font-bold text-gray-900">
-        Reset your password
-      </h2>
-      <p class="mt-2 text-center text-sm text-gray-600">
-        Remember your password?
-        <RouterLink to="/login" class="font-medium text-senpai-600 hover:text-senpai-500">
-          Sign in
-        </RouterLink>
-      </p>
-    </div>
-
-    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-      <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+  <AuthLayout title="Reset your password" eyebrow="Account recovery">
+    <template #intro><p>Remember your password? <RouterLink to="/login">Sign in</RouterLink></p></template>
         <!-- Success State -->
         <div v-if="submitted" class="text-center">
           <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
@@ -106,6 +75,8 @@ async function handleSubmit() {
               v-model="email"
               type="email"
               label="Email address"
+              name="email"
+              autocomplete="email"
               placeholder="you@example.com"
               :error="emailError"
               required
@@ -121,7 +92,5 @@ async function handleSubmit() {
             </BaseButton>
           </form>
         </div>
-      </div>
-    </div>
-  </div>
+  </AuthLayout>
 </template>

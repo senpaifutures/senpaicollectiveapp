@@ -112,7 +112,7 @@ watch(() => route.params.id, (newId, oldId) => {
 
 <template>
   <AppLayout>
-    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="profile-page-frame">
       <RouterLink to="/members" class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-6">
         <ArrowLeftIcon class="h-4 w-4 mr-1" />
         Back to directory
@@ -159,3 +159,13 @@ watch(() => route.params.id, (newId, oldId) => {
     </div>
   </AppLayout>
 </template>
+
+<style scoped>
+.profile-page-frame { width: min(1120px, 100%); margin-inline: auto; padding: 30px 32px 48px; }
+.profile-page-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 12px; color: #65788c; margin-bottom: 20px; }
+.profile-page-toolbar a { color: #138486; }
+.profile-activity { max-width: 100%; }
+.profile-activity h2 { text-transform: none; letter-spacing: 0; color: #43546b; font-size: 14px; }
+.profile-activity li { padding: 16px 22px; font-size: 12px; }
+@media (max-width: 640px) { .profile-page-frame { padding: 24px 20px 40px; } }
+</style>

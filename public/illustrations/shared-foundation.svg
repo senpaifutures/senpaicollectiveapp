@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">A shared foundation</title>
+  <desc id="desc">Different contributions connect to support one shared platform, illustrating the Collective Pool.</desc>
+  <g stroke="#bfd3c8" stroke-width="1.5">
+    <path d="m56 237 247-130 246 130M89 254l214-112 214 112M126 271l177-94 177 94"/>
+    <path d="M103 212v-52m390 52v-52M303 107V46" stroke-dasharray="4 7"/>
+  </g>
+  <ellipse cx="302" cy="255" rx="189" ry="26" fill="#c9dcd0"/>
+  <g stroke="#233f34" stroke-width="2.5" stroke-linejoin="round">
+    <path d="m137 196 53-28 52 28-53 29z" fill="#fafcf5"/>
+    <path d="m137 196 52 29v36l-52-29z" fill="#8ab6a4"/>
+    <path d="m189 225 53-29v36l-53 29z" fill="#416b5b"/>
+    <path d="m249 222 53-28 52 28-53 29z" fill="#f1efc8"/>
+    <path d="m249 222 52 29v31l-52-29z" fill="#cdda8f"/>
+    <path d="m301 251 53-29v31l-53 29z" fill="#8f9f61"/>
+    <path d="m361 195 53-28 52 28-53 29z" fill="#a6e7dd"/>
+    <path d="m361 195 52 29v37l-52-29z" fill="#41c0bf"/>
+    <path d="m413 224 53-29v37l-53 29z" fill="#247a71"/>
+    <path d="M175 129v65l15 8 16-8v-65m80 25v68l16 8 16-8v-68m80-27v66l16 8 16-8v-66" fill="#fcfdf7"/>
+    <path d="m104 114 198-91 198 91-198 97z" fill="#fbfdf6"/>
+    <path d="m104 114 198 97v23l-198-97z" fill="#7bc8b4"/>
+    <path d="m302 211 198-97v23l-198 97z" fill="#286853"/>
+    <path d="m136 114 166-76 166 76-166 80z" fill="#daecdf"/>
+    <path d="m219 76 166 78M219 155l166-79" stroke="#8aaf9c" stroke-width="1.5"/>
+    <ellipse cx="302" cy="111" rx="47" ry="23" fill="#41c0bf"/>
+    <path d="m282 111 13 7 29-15" stroke="#173f34" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <g stroke="#233f34" stroke-width="2" stroke-linecap="round"><path d="M65 99h16m-8-8v16M516 63h12m-6-6v12"/><circle cx="535" cy="174" r="4" fill="#cdda8f"/><circle cx="95" cy="63" r="4" fill="#41c0bf"/></g>
+</svg>

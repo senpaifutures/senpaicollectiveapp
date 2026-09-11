@@ -315,10 +315,10 @@ async function onPhotoSelected(e: Event) {
 
 <template>
   <AppLayout>
-    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="profile-editor-page">
       <div class="flex items-center justify-between mb-8">
         <h1 class="text-2xl font-bold text-gray-900">Edit your profile</h1>
-        <button class="text-sm text-gray-500 hover:text-gray-700" @click="goBack">Done</button>
+        <button class="text-sm text-gray-500 hover:text-gray-700" @click="goBack">Back to profile</button>
       </div>
 
       <BaseAlert v-if="success" type="success" class="mb-6" dismissible @dismiss="success = false">
@@ -328,9 +328,10 @@ async function onPhotoSelected(e: Event) {
         {{ error }}
       </BaseAlert>
 
-      <form class="space-y-12" @submit.prevent="save">
+      <div class="profile-editor-layout"><nav class="profile-editor-index" aria-label="Profile sections"><p>On your profile</p><a href="#edit-basics">Photo & basics</a><a href="#edit-about">About</a><a href="#edit-education">Education</a><a href="#edit-work">Work</a><a href="#edit-skills">Skills & experience</a><a href="#edit-goal">Your goal</a><a href="#edit-links">Links</a></nav>
+      <form class="profile-editor-form" @submit.prevent="save">
         <!-- 1. Photo & basics -->
-        <section class="space-y-5">
+        <section id="edit-basics" class="profile-editor-section space-y-5">
           <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Photo & basics</h2>
           <div class="flex items-center gap-4">
             <div v-if="form.photo_url" class="h-20 w-20 rounded-full overflow-hidden bg-gray-100 shrink-0">
@@ -368,7 +369,7 @@ async function onPhotoSelected(e: Event) {
         </section>
 
         <!-- 2. About -->
-        <section class="space-y-5">
+        <section id="edit-about" class="profile-editor-section space-y-5">
           <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">About</h2>
           <BaseTextarea v-model="form.bio" label="Bio" placeholder="Tell us about yourself, your background, and what you're passionate about." :maxlength="500" :rows="4" :error="errors.bio" required />
           <BaseTextarea v-model="form.unique_view" label="Unique view" placeholder="Share your perspective, philosophy, or approach to creativity and work. What drives you?" :maxlength="1000" :rows="4" />
@@ -383,7 +384,7 @@ async function onPhotoSelected(e: Event) {
         </section>
 
         <!-- 3. Education -->
-        <section class="space-y-5">
+        <section id="edit-education" class="profile-editor-section space-y-5">
           <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Education</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <BaseSelect v-model="form.school_status" :options="schoolStatusOptions" label="School status" placeholder="Select" />
@@ -392,7 +393,7 @@ async function onPhotoSelected(e: Event) {
         </section>
 
         <!-- 5. Work -->
-        <section class="space-y-5">
+        <section id="edit-work" class="profile-editor-section space-y-5">
           <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Work</h2>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <BaseInput v-model="form.job_title" label="Current role" placeholder="Product Designer" />
@@ -407,7 +408,7 @@ async function onPhotoSelected(e: Event) {
         </section>
 
         <!-- 6. Skills & experience — editable; adding a skill unlocks claiming open tasks tagged with it -->
-        <section class="space-y-5">
+        <section id="edit-skills" class="profile-editor-section space-y-5">
           <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Skills & experience</h2>
 
           <BaseSelect v-model="form.experience_level" :options="experienceLevelOptions" label="Experience level" placeholder="Select" />
@@ -445,11 +446,11 @@ async function onPhotoSelected(e: Event) {
             <p v-else class="text-sm text-gray-400 mb-3">No skills yet — add one below.</p>
 
             <div class="flex items-center gap-2">
-              <select v-model="addSkillId" class="flex-1 text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white">
+              <select aria-label="Skill to add" v-model="addSkillId" class="flex-1 text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white">
                 <option value="">Add a skill…</option>
                 <option v-for="s in addableSkills" :key="s.id" :value="String(s.id)">{{ s.name }}</option>
               </select>
-              <BaseButton variant="outline" :disabled="!addSkillId" :loading="skillBusyId === Number(addSkillId)" @click="addSkill">
+              <BaseButton variant="outline" aria-label="Add selected skill" :disabled="!addSkillId" :loading="skillBusyId === Number(addSkillId)" @click="addSkill">
                 <PlusIcon class="h-4 w-4" />
               </BaseButton>
             </div>
@@ -458,7 +459,7 @@ async function onPhotoSelected(e: Event) {
         </section>
 
         <!-- 7. Your goal -->
-        <section class="space-y-3">
+        <section id="edit-goal" class="profile-editor-section space-y-3">
           <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Your goal</h2>
           <BaseTextarea
             v-model="form.goal"
@@ -469,7 +470,7 @@ async function onPhotoSelected(e: Event) {
         </section>
 
         <!-- 8. Links -->
-        <section class="space-y-4">
+        <section id="edit-links" class="profile-editor-section space-y-4">
           <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Links</h2>
           <BaseInput v-model="form.portfolio_url" label="Portfolio URL" placeholder="https://yourportfolio.com" :error="errors.portfolio_url" />
           <div class="space-y-3">
@@ -507,11 +508,30 @@ async function onPhotoSelected(e: Event) {
         </section>
 
         <!-- Save -->
-        <div class="flex items-center gap-4 pt-2 border-t border-gray-200">
-          <BaseButton type="submit" :loading="loading" class="mt-6">Save changes</BaseButton>
-          <button type="button" class="mt-6 text-sm text-gray-500 hover:text-gray-700" @click="goBack">Cancel</button>
+        <div class="profile-save-bar">
+          <BaseButton type="submit" :loading="loading">Save changes</BaseButton>
+          <button type="button" class="text-sm text-gray-500 hover:text-gray-700" @click="goBack">Cancel</button>
         </div>
       </form>
+      </div>
     </div>
   </AppLayout>
 </template>
+
+<style scoped>
+.profile-editor-page { width: min(1110px, 100%); margin: auto; padding: 32px; }
+.profile-editor-layout { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 36px; align-items: start; }
+.profile-editor-index { display: grid; gap: 4px; position: sticky; top: 24px; padding-top: 10px; }
+.profile-editor-index p { font-size: 10px; font-weight: 600; color: #718195; text-transform: uppercase; letter-spacing: .8px; padding: 0 10px 14px; }
+.profile-editor-index a { padding: 10px; color: #5d6e83; font-size: 12px; border-radius: 6px; }
+.profile-editor-index a:hover { background: #eaf6f5; color: #0d8182; }
+.profile-editor-form { display: grid; gap: 22px; min-width: 0; }
+.profile-editor-section { border: 1px solid #e3e9ef; background: #fff; border-radius: 11px; padding: 26px; scroll-margin-top: 24px; }
+.profile-editor-section h2 { font-size: 14px; font-weight: 650; text-transform: none; letter-spacing: 0; color: #3b5067; border-bottom: 1px solid #edf0f4; padding-bottom: 18px; }
+.profile-save-bar { position: sticky; bottom: 16px; display: flex; align-items: center; justify-content: flex-end; gap: 20px; padding: 16px 20px; background: #fff; border: 1px solid #e0e8ee; border-radius: 10px; box-shadow: 0 4px 18px #273c5010; z-index: 10; }
+.profile-editor-page :deep(label) { font-size: 12px; }
+.profile-editor-page :deep(input), .profile-editor-page :deep(textarea) { background: #fff; }
+@media (max-width: 1023px) { .profile-save-bar { bottom: calc(76px + env(safe-area-inset-bottom)); } }
+@media (max-width: 767px) { .profile-editor-layout { display: block; } .profile-editor-index { position: static; display: flex; flex-wrap: wrap; gap: 4px; padding: 0; margin-bottom: 22px; } .profile-editor-index p { width: 100%; padding: 0 0 8px; } .profile-editor-index a { padding: 7px 10px; border: 1px solid #e1e8ee; background: #fff; font-size: 11px; } }
+@media (max-width: 640px) { .profile-editor-page { padding: 24px 20px; } .profile-editor-section { padding: 22px 20px; } }
+</style>

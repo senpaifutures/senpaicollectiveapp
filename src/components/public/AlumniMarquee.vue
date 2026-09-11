@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { ALUMNI } from '@/content/alumni'
 
 // Two independent, oppositely-scrolling rows read better than one long belt —
@@ -6,23 +7,27 @@ import { ALUMNI } from '@/content/alumni'
 const mid = Math.ceil(ALUMNI.length / 2)
 const rowA = ALUMNI.slice(0, mid)
 const rowB = ALUMNI.slice(mid)
+const paused = ref(false)
 </script>
 
 <template>
-  <div class="space-y-3 [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
-    <div class="marquee-row">
+  <div class="alumni-gallery" :class="{ 'is-paused': paused }">
+    <div class="gallery-controls">
+      <button type="button" :aria-pressed="paused" @click="paused = !paused">{{ paused ? 'Resume portraits' : 'Pause portraits' }}</button>
+    </div>
+    <div class="marquee-row" tabindex="0" role="region" aria-label="Alumni portraits, first row">
       <div class="marquee-track marquee-left">
-        <div v-for="(person, i) in [...rowA, ...rowA]" :key="`a-${i}`" class="alumnus-card" :title="person.bio">
-          <img :src="person.photoUrl" :alt="person.name" loading="lazy" class="alumnus-photo" />
+        <div v-for="(person, i) in [...rowA, ...rowA]" :key="`a-${i}`" class="alumnus-card" :title="person.bio" :aria-hidden="i >= rowA.length ? true : undefined">
+          <img :src="person.photoUrl" :alt="i < rowA.length ? person.name : ''" loading="lazy" class="alumnus-photo" />
           <div class="alumnus-scrim" />
           <p class="alumnus-name">{{ person.name }}</p>
         </div>
       </div>
     </div>
-    <div class="marquee-row">
+    <div class="marquee-row" tabindex="0" role="region" aria-label="Alumni portraits, second row">
       <div class="marquee-track marquee-right">
-        <div v-for="(person, i) in [...rowB, ...rowB]" :key="`b-${i}`" class="alumnus-card" :title="person.bio">
-          <img :src="person.photoUrl" :alt="person.name" loading="lazy" class="alumnus-photo" />
+        <div v-for="(person, i) in [...rowB, ...rowB]" :key="`b-${i}`" class="alumnus-card" :title="person.bio" :aria-hidden="i >= rowB.length ? true : undefined">
+          <img :src="person.photoUrl" :alt="i < rowB.length ? person.name : ''" loading="lazy" class="alumnus-photo" />
           <div class="alumnus-scrim" />
           <p class="alumnus-name">{{ person.name }}</p>
         </div>
@@ -32,6 +37,14 @@ const rowB = ALUMNI.slice(mid)
 </template>
 
 <style scoped>
+.alumni-gallery { min-width: 0; }
+.gallery-controls { display: flex; justify-content: flex-end; padding: 0 20px 12px; }
+.gallery-controls button { font: inherit; font-size: 12px; color: inherit; border: 1px solid currentColor; background: transparent; padding: 8px 12px; cursor: pointer; }
+.gallery-controls button:focus-visible, .marquee-row:focus-visible { outline: 2px solid #217674; outline-offset: 3px; }
+.marquee-row + .marquee-row { margin-top: 6px; }
+.is-paused .marquee-track { animation-play-state: paused; }
+.marquee-row:focus .marquee-track { animation: none; }
+.marquee-row:focus { overflow-x: auto; }
 .marquee-row {
   overflow: hidden;
 }
@@ -40,6 +53,7 @@ const rowB = ALUMNI.slice(mid)
   display: flex;
   gap: 3px;
   width: max-content;
+  padding-right: 3px;
 }
 
 .marquee-left {
@@ -67,12 +81,6 @@ const rowB = ALUMNI.slice(mid)
   height: 100%;
   object-fit: cover;
   display: block;
-  filter: grayscale(100%);
-  transition: filter 0.25s ease;
-}
-
-.alumnus-card:hover .alumnus-photo {
-  filter: grayscale(0%);
 }
 
 .alumnus-scrim {
@@ -106,6 +114,8 @@ const rowB = ALUMNI.slice(mid)
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .gallery-controls { display: none; }
+  .marquee-row { overflow-x: auto; }
   .marquee-track {
     animation: none !important;
   }
