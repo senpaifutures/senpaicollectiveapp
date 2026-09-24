@@ -59,10 +59,9 @@ const questions = [
           <p class="eyebrow">A community. A platform. A shared ambition.</p>
           <h1 id="hero-title">Africa’s future systems.<br /><em>Built by us.</em></h1>
           <p class="hero-description">SENPAI COLLECTIVE is a selective community and platform for exceptional talent. Find collaborators, build shared projects, and earn verification through work that meets our standards. Our shared ambition: the future systems of Africa.</p>
-          <a href="#the-record" class="hero-standard"><CheckBadgeIcon aria-hidden="true" /><span>Selective membership. Earned skill verification.</span><ArrowRightIcon aria-hidden="true" /></a>
+          <p class="hero-standard"><CheckBadgeIcon aria-hidden="true" /><span>Selective membership. Earned skill verification.</span></p>
           <div class="hero-actions">
             <RouterLink :to="entryPath" class="button">{{ entryLabel }} <ArrowUpRightIcon /></RouterLink>
-            <a href="#shared-projects" class="text-link">What we build together <ArrowRightIcon /></a>
           </div>
           <IntakePanel compact />
         </div>
@@ -309,7 +308,6 @@ h1 { font-size: clamp(3rem, 6.8vw, 6.25rem); line-height: 1.08; letter-spacing: 
 h1 em { color: #278c89; }
 .hero-description { max-width: 700px; margin: 26px auto 0; font-size: 18px; line-height: 1.8; color: #52625e; }
 .hero-standard { display: flex; align-items: center; justify-content: center; gap: 12px; width: fit-content; max-width: 100%; margin: 22px auto 0; color: #266f6e; font-size: 13px; font-weight: 600; line-height: 1.6; text-align: left; padding-block: 8px; }
-.hero-standard:hover span { text-decoration: underline; text-underline-offset: 4px; }
 .hero-standard > svg:first-child { width: 24px; height: 24px; }
 .verification-standards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; padding-block: 28px; border-block: 1px solid var(--line); }
 .verification-standards span { color: #65766c; font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase; }
