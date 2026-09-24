@@ -20,7 +20,7 @@ const profiles = [
       <article v-for="(profile, index) in profiles" :key="profile.skill" class="talent-preview-card">
         <div class="talent-profile-summary">
           <div class="talent-portrait">
-            <img src="/images/verification-preview-portraits.png" :alt="`AI-generated portrait of a fictional ${profile.role.toLowerCase()}`" :style="{ left: `${index * -100}%` }" width="1536" height="1024" loading="lazy" />
+            <img src="/images/verification-preview-portraits.webp" :alt="`AI-generated portrait of a fictional ${profile.role.toLowerCase()}`" :style="{ left: `${index * -100}%` }" width="768" height="512" loading="lazy" />
           </div>
           <div class="talent-profile-identity">
             <span class="profile-example-label">Illustrative profile</span>
